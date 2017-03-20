@@ -11,7 +11,8 @@
 # Resources : http://code.activestate.com/recipes/577261-python-tkinter-tabs/
 
 from tkinter import *
-#import GUIFunctions
+from tkinter import filedialog
+import GUIFunctions
 
 #~~~~~~~~~~ TAB FUNCTIONALITY ~~~~~~~~~~
 
@@ -149,13 +150,14 @@ if __name__ == '__main__':
 
     root = Tk()
 
-    root.title("Tabs")
+    root.title("KATTZraper");
+    #root.geometry('500x500')
 
     menu = Menu(root)
     root.config(menu=menu)  # what's under 'File' menu item
     fileMenu = Menu(menu)
     menu.add_cascade(label="File", menu=fileMenu)
-    fileMenu.add_command(label="lorem ")
+    fileMenu.add_command(label="New Search", command=GUIFunctions.NewSearch())
     fileMenu.add_separator()
     fileMenu.add_command(label="Exit", command=root.quit)
 
@@ -164,37 +166,65 @@ if __name__ == '__main__':
     aboutMenu.add_command(label="Author")
     aboutMenu.add_command(label="Zyber Katz")
 
-    bar = TabBar(root, "Info")
-
+    bar = TabBar(root, "Search")
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     tab1 = Tab(root, "Search")  # notice how this one's master is the root instead of the bar
-    label = Label(tab1, text="K.A.T.T.Z. web scraper").grid(row = 1, column = 1)
-    jobTitleEntry = Label(tab1, text="Job title").grid(row=2, sticky=E, padx = 5, pady=5)
-    entry1 = Entry(tab1).grid(row=2, sticky=E, padx = 5, pady=5)
-    stateEntry = Label(tab1, text="State").grid(row=3, sticky=E, padx = 5, pady=5)
-    entry2 = Entry(tab1).grid(row=3, column=1, sticky=E, padx = 5, pady=5)
-    CityEntry = Label(tab1, text="City").grid(row=4, sticky=E, padx = 5, pady=5)
-    entry3 = Entry(tab1).grid(row=4, column=1, sticky=E, padx = 5, pady=5)
-    NameOfSearchEntry = Label(tab1, text="Name this search").grid(row=5, sticky=E, padx = 5, pady=5)
-    entry4 = Entry(tab1).grid(row=5, column=1, sticky=E, padx = 5, pady=5)
+    #frame1 = Frame(tab1)
+    label = Label(tab1, text="K.A.T.T.Z. web scraper").grid(row=0, column= 0, padx = 10, pady=10)
+    jobTitleEntry = Label(tab1, text="Job title").grid(row=1, sticky=W, padx = 10, pady=10)
+    entry1 = Entry(tab1).grid(row=1, column=1, padx = 10, pady=10)
+    stateEntry = Label(tab1, text="State").grid(row=2, sticky=W, padx = 10, pady=10)
+    entry2 = Entry(tab1).grid(row=2, column=1,padx = 10, pady=10)
+    CityEntry = Label(tab1, text="City").grid(row=3, sticky=W, padx = 10, pady=10)
+    entry3 = Entry(tab1).grid(row=3, column=1, padx = 10, pady=10)
+    NameOfSearchEntry = Label(tab1, text="Name this search").grid(row=4, sticky=W, padx = 10, pady=10)
+    entry4 = Entry(tab1).grid(row=4, column=1, padx = 10, pady=10)
+    searchButton = Button(tab1, text="Search Indeed.com").grid(row=5, padx = 10, pady=10)
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    tab2 = Tab(root, "Results")
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    tab3 = Tab(root, "Analytics")
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    tab4 = Tab(root, "Export/Import")
+    #Option menu for saved search
+    savedSearch = StringVar(tab4)
+    savedSearch.set("choose a saved search") #default saved search
+    savedSearchOption = OptionMenu(tab4, savedSearch, "choose a saved search", "two")
+    savedSearchOption.grid(row=0, column= 0, padx = 5, pady=5)
+
+    #
+    renameSearch = Label(tab4, text="Rename Search: ").grid(row=1, sticky=W, padx = 5, pady=5)
+    entry1 = Entry(tab4).grid(row=1, column=1, padx = 5, pady=5)
+    searchExtension = StringVar(tab4)
+    searchExtension.set("choose a file extension") #default
+    searchExtensionOption = OptionMenu(tab4, searchExtension, "choose a file extension", ".pdf", ".jpeg", ".?others?")
+    searchExtensionOption.grid(row=1, column= 2, padx = 5, pady=5)
+    exportDestination = Label(tab4, text="Export Destination").grid(row=2, sticky=W, padx = 5, pady=5)
+    entry2 = Entry(tab4).grid(row=2, column=1,padx = 5, pady=5)
+    entry2Button = Button(tab4, text="Choose location").grid(row=2, column=2,padx = 5, pady=5, command=GUIFunctions.chooseExportLocation(tab4, entry2))
 
 
 
-    tab2 = Tab(root, "Hi there!")
-    Label(tab2, text="How are you??", bg='black', fg='#3366ff').pack(side=TOP, fill=BOTH, expand=YES)
-    txt = Text(tab2, width=50, height=20)
-    txt.focus()
-    txt.pack(side=LEFT, fill=X, expand=YES)
-    Button(tab2, text="Get")
 
-    tab3 = Tab(root, "Info")
-    Label(tab3, bg='white')
+    importDestination = Label(tab4, text="Import Destination").grid(row=3, sticky=W, padx = 5, pady=5)
+    entry3 = Entry(tab4).grid(row=3, column=1, padx = 5, pady=5)
 
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    tab5 = Tab(root, "About")
+
+
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     bar.add(tab1)  # add the tabs to the tab bar
     bar.add(tab2)
     bar.add(tab3)
+    bar.add(tab4)
+    bar.add(tab5)
 
     bar.config(bd=2, relief=RIDGE)			# add some border
 
     bar.show()
-
     root.mainloop()
