@@ -17,7 +17,7 @@ import socket
 from tkinter import messagebox
 import sys
 import GUIFrame
-import main
+
 
 
 def NewSearch():
@@ -33,8 +33,6 @@ def AboutAuthor():
     GUIFrame.listbox.insert(END, "Author: Tegan Straley\n\n")
     GUIFrame.listbox.insert(END, "Class: CSCI 4800")
     GUIFrame.listbox.insert(END, "Date: February 28, 2017")
-
-
 
 
 def chooseExportLocation(outputTab, output):

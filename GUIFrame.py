@@ -72,80 +72,8 @@ class TabBar(Frame):
 
         self.buttons[name].config(relief=SELECTED)
 
-
-#~~~~~~~~~~ MENU ~~~~~~~~~~
-
-# root = Tk()
-#
-# menu = Menu(root)
-# root.config(menu=menu) # what's under 'File' menu item
-# fileMenu = Menu(menu)
-# menu.add_cascade(label="File", menu=fileMenu)
-# fileMenu.add_command(label="lorem pdsem")
-# fileMenu.add_separator()
-# fileMenu.add_command(label="Exit", command=root.quit)
-#
-# aboutMenu = Menu(menu) # what's under 'About' menu item
-# menu.add_cascade(label="About", menu=aboutMenu)
-# aboutMenu.add_command(label="Author")
-# aboutMenu.add_command(label="Zyber Katz")
-#
-# #~~~~~~~~ TABS CREATION ~~~~~~~~
-#
-# bar = TabBar(root, "Search")
-# tab1 = Tab(root, "tab1")
-# label = Label(tab1, text="K.A.T.T.Z. web scraper")
-# # things for scannerInfo2
-# jobTitleEntry = Label(tab1, text="Job title")
-# entry1 = Entry(tab1)
-# stateEntry = Label(tab1, text="State")
-# entry2 = Entry(tab1)
-# CityEntry = Label(tab1, text="City")
-# entry3 = Entry(tab1)
-# NameOfSearchEntry = Label(tab1, text="Name this search")
-# entry4 = Entry(tab1)
-#
-#
-# #~~~~~~~~ FEATURE CREATION ~~~~~~~~
-#
-# # scannerInfo = Frame(root)
-# # scannerInfo2 = Frame(root)
-# # scannerInfo3 = Frame(root)
-#
-#
-# # things for scannerInfo3
-# scan_button = Button(tab1, text="Search Indeed.com", width = 20, height = 1)
-#
-# #~~~~~~~~~~ LAYOUT PACK, GRID, ETC. ~~~~~~~~~~~~~
-#
-# #scannerInfo
-# label.pack(fill=X, pady=10)
-#
-# #scannerInfo2
-# # jobTitleEntry.grid(row=1, sticky=E, padx = 5, pady=5)
-# # entry1.grid(row=1, column=1, sticky=E, padx = 5, pady=5)
-# # stateEntry.grid(row=2, sticky=E, padx = 5, pady=5)
-# # entry2.grid(row=2, column=1, sticky=E, padx = 5, pady=5)
-# # CityEntry.grid(row=3, sticky=E, padx = 5, pady=5)
-# # entry3.grid(row=3, column=1, sticky=E, padx = 5, pady=5)
-# # NameOfSearchEntry.grid(row=3, sticky=E, padx = 5, pady=5)
-# # entry4.grid(row=3, column=1, sticky=E, padx = 5, pady=5)
-#
-# #scannerInfo3
-# scan_button.pack(padx = 10, pady=10)
-#
-# # scannerInfo.pack()
-# # scannerInfo2.pack()
-# # scannerInfo3.pack()
-#
-# bar.add(tab1)
-#
-#
-# root.title("Zyber Katz K.A.T.T.Z. web scrapper")
-#
-# bar.show()
-# mainloop() # shows the GUI
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if __name__ == '__main__':
 
     root = Tk()
@@ -157,7 +85,7 @@ if __name__ == '__main__':
     root.config(menu=menu)  # what's under 'File' menu item
     fileMenu = Menu(menu)
     menu.add_cascade(label="File", menu=fileMenu)
-    fileMenu.add_command(label="New Search", command=GUIFunctions.NewSearch())
+    fileMenu.add_command(label="New Search", command=GUIFunctions.NewSearch)
     fileMenu.add_separator()
     fileMenu.add_command(label="Exit", command=root.quit)
 
@@ -179,12 +107,27 @@ if __name__ == '__main__':
     entry3 = Entry(tab1).grid(row=3, column=1, padx = 10, pady=10)
     NameOfSearchEntry = Label(tab1, text="Name this search").grid(row=4, sticky=W, padx = 10, pady=10)
     entry4 = Entry(tab1).grid(row=4, column=1, padx = 10, pady=10)
-    searchButton = Button(tab1, text="Search Indeed.com").grid(row=5, padx = 10, pady=10)
+    searchButton = Button(tab1, text="Search Indeed.com").grid(row=5, padx = 10, pady=10, rowspan=10) #center the search button?
+
+
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     tab2 = Tab(root, "Results")
+    title = Label(tab2, text="Choose a search").grid(row=0, column=0, padx=10, pady=10)
+    savedSearch = StringVar(tab2)
+    savedSearch.set("search") #default saved search
+    savedSearchOption = OptionMenu(tab2, savedSearch, "search", "two")
+    savedSearchOption.grid(row=1, column= 0, padx = 5, pady=5)
+
+
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     tab3 = Tab(root, "Analytics")
+    title = Label(tab3, text="Choose a search").grid(row=0, column=0, padx=10, pady=10)
+    savedSearch = StringVar(tab3)
+    savedSearch.set("search") #default saved search
+    savedSearchOption = OptionMenu(tab3, savedSearch, "search", "two")
+    savedSearchOption.grid(row=1, column= 0, padx = 5, pady=5)
+
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     tab4 = Tab(root, "Export/Import")
@@ -204,18 +147,18 @@ if __name__ == '__main__':
     exportDestination = Label(tab4, text="Export Destination").grid(row=2, sticky=W, padx = 5, pady=5)
     entry2 = Entry(tab4).grid(row=2, column=1,padx = 5, pady=5)
     entry2Button = Button(tab4, text="Choose location").grid(row=2, column=2,padx = 5, pady=5, command=GUIFunctions.chooseExportLocation(tab4, entry2))
-
-
-
+    exportButton = Button(tab4, text="Export").grid(row=2, column=3, padx=5, pady=5 ) #command= export function garrett writes)
 
     importDestination = Label(tab4, text="Import Destination").grid(row=3, sticky=W, padx = 5, pady=5)
     entry3 = Entry(tab4).grid(row=3, column=1, padx = 5, pady=5)
-
-
+    entry3Button = Button(tab4, text="Choose location").grid(row=3, column=2,padx = 5, pady=5, command=GUIFunctions.chooseExportLocation(tab4, entry3))
+    importButton = Button(tab4, text="Import").grid(row=3, column=3, padx=5, pady=5 ) #command= import function garrett writes)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     tab5 = Tab(root, "About")
-
-
+    authors = Label(tab5, text="Authors:").grid(row=1, column=0, padx=5, pady=5)
+    authorsNames = Label(tab5, text="Justin, G, Garrett, Tegan").grid(row=1, column=1, padx=5, pady=5)
+    purpose = Label(tab5, text="Purpose:").grid(row=2, column=0, padx=5, pady=5)
+    purposeText = Label(tab5, text="Indeed.com scrapper to learn which\n qualifications are looked for in jobs.").grid(row=2, column=1, padx=5, pady=5)
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     bar.add(tab1)  # add the tabs to the tab bar
