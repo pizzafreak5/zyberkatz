@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 import hashlib
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta #time
 
 class scraper:
     def __init__(self, settings, db_cursor, table):
