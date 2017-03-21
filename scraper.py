@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 import hashlib
 import re
+from datetime import datetime, timedelta
 
 class scraper:
     def __init__(self, settings, db_cursor, table):
@@ -109,6 +110,18 @@ class scraper:
 
         return nav_links
     
+    def convert_time_posted(self, time):
+        digit = time.split(' ')       
+        today = datetime.now()
+        #subtract it as days
+        if 'day' in time:
+            today = today - timedelta(days=int(digit[0]))
+        #subtract it as hours
+        elif 'hour' in time:
+            today = today - timedelta(hours=int(digit[0]))
+        
+        return today
+    
     def process_content(self, get, url):
         soup = BeautifulSoup(get.text, 'lxml')    
         
@@ -145,6 +158,7 @@ class scraper:
                 time_posted = listing.find(self.time_posted_tag, self.time_posted_attrs)
                 if time_posted != None:
                     time_posted = time_posted.text
+                    time_posted = self.convert_time_posted(time_posted)
                 else:
                     time_posted = "None"
                 
