@@ -12,7 +12,7 @@ print (url)                         #show the url
 #'''
 
 ###################################
-#######DATABASE AND SCRAPING#######
+###### DATABASE AND SCRAPING#######
 ###################################
 #Preparing the sqlite3 database for scraper.py
 listings = sqlite3.connect(':memory:')          #Create a database in ram
