@@ -17,6 +17,38 @@ import socket
 from tkinter import messagebox
 import sys
 import GUIFrame
+import datetime
+import threading
+
+
+aboutTxt = """
+Katz Attack Triple Threat Z'craper: (KATTZ)
+Licensed 2017, March 25th.
+
+Release version # 1.0.4
+
+This port scanner tool was constructed to scan a desired remote host IP
+address between the user defined starting and ending ports.
+
+Powered by open-source software
+"""
+
+disclaimer = """
+Disclaimer
+
+This tool was manufactured for an university class project. Much testing
+has been performed, however unforeseen scenarios may impose undesirable
+output and/or operation. There is no warranty to the output and/or operation
+provided by this tool. This tool should be considered as a learning tool
+and not be applied for professional applications.
+
+Thank you,
+Justin Hockenberry, Gediminas Jakstonis,
+Garrett Schwartz, & Tegan Straley\n"""
+
+
+
+
 
 
 
@@ -27,30 +59,29 @@ def NewSearch():
     GUIFrame.listbox.delete(0, END)
 
 
-def AboutAuthor():
-    print("Created by: Tegan Straley\nClass: CSCI 4800\nFebruary 28, 2017\n")
-    GUIFrame.listbox.delete(0, END)
-    GUIFrame.listbox.insert(END, "Author: Tegan Straley\n\n")
-    GUIFrame.listbox.insert(END, "Class: CSCI 4800")
-    GUIFrame.listbox.insert(END, "Date: February 28, 2017")
+def About():
+    # About option from drop down window
+    # Opens new window to display About message and Disclaimer
+    toplevel = Toplevel()
+    label1 = Label(toplevel, text=aboutTxt, height=0, width=60)
+    label1.pack()
+    label2 = Label(toplevel, text=disclaimer, height=0, width=60)
+    label2.pack()
 
 
-def chooseExportLocation(outputTab, output):
-    outputTab.output = filedialog.askopenfilename(initialdir="/", title="select file",
-                                                  filetypes=(("jpeg files", "*jpg"), ("all files", "*.*")))
 
+#add somewhere in the GUI???
+def updateStatus(textVar):
+    GUIFrame.statusText.set(textVar)
 
 
 def play(self):
-
-    self.updateStatus("Please wait, scanning remote host...")
-
+    #self.updateStatus("Please wait, scanning remote host...")
     try:
         # Check if valid IP address, if not valid Catch Exception
-        network = ipaddress.IPv4Network(self.e1.get())
 
         # If the Starting and Ending Ports are valid and If Starting is smaller than Ending Port
-        if self.e2.get().isdigit() and self.e3.get().isdigit() and self.e2.get() < self.e3.get():
+        if self.entry1.get() and self.entry2.get() and self.entry3.get() and self.entry4.get():
             # If not already running start a new thread to scan
             if self.isRunning == False:
                 self.isRunning = True
@@ -67,7 +98,6 @@ def play(self):
 
 
 def run(self):
-
     # Clear output 'listbox' and start fresh
     self.foundOpenList = []
     self.listbox.delete(0, END)
@@ -109,15 +139,15 @@ def run(self):
 
 
 
-def output(self):
+def output():
 
     # Don't try to save while a scan is ongoing
-    if self.isRunning == False:
+    #if self.isRunning == False:
         try:
-            root.filename = filedialog.asksaveasfilename(initialdir="/", title="Select file",
+            GUIFrame.root.filename = filedialog.asksaveasfilename(initialdir="/", title="Select file",
                                                          filetypes=(("jpeg files", "*.jpg"), ("all files", "*.*")))
             # Write to output file
-            with open(root.filename, 'w') as f:
+            with open(GUIFrame.root.filename, 'w') as f:
                 f.write("-" * 35)
                 f.write('\n---- Foxy Port Scanner Output -----\n\n')
                 f.write('Remote Host IP: {}\n'.format(self.e1.get()))
@@ -131,5 +161,5 @@ def output(self):
 
         except FileNotFoundError:
             self.updateStatus("No such file or directory selected...")
-    else:
-            self.updateStatus("Can't save output while running...")
+    #else:
+     #       self.updateStatus("Can't save output while running...")
