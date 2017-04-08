@@ -16,10 +16,9 @@ from tkinter import filedialog
 import socket
 from tkinter import messagebox
 import sys
-import GUIFrame
+#import GUIFrame
 import datetime
 import threading
-
 
 aboutTxt = """
 Katz Attack Triple Threat Z'craper: (KATTZ)
@@ -48,35 +47,24 @@ Garrett Schwartz, & Tegan Straley\n"""
 
 
 
-
-
-
-
-def NewSearch():
-    GUIFrame.entry1.delete(0, END)
-    GUIFrame.entry2.delete(0, END)
-    GUIFrame.entry3.delete(0, END)
-    GUIFrame.listbox.delete(0, END)
-
-
-def About():
+def about():
     # About option from drop down window
     # Opens new window to display About message and Disclaimer
     toplevel = Toplevel()
+    toplevel.iconbitmap('sideprofileCat.ico')
     label1 = Label(toplevel, text=aboutTxt, height=0, width=60)
     label1.pack()
     label2 = Label(toplevel, text=disclaimer, height=0, width=60)
     label2.pack()
 
 
-
-#add somewhere in the GUI???
+# add somewhere in the GUI???
 def updateStatus(textVar):
     GUIFrame.statusText.set(textVar)
 
 
 def play(self):
-    #self.updateStatus("Please wait, scanning remote host...")
+    # self.updateStatus("Please wait, scanning remote host...")
     try:
         # Check if valid IP address, if not valid Catch Exception
 
@@ -137,29 +125,26 @@ def run(self):
         self.updateStatus("Couldn't connect to server")
 
 
-
-
 def output():
-
     # Don't try to save while a scan is ongoing
-    #if self.isRunning == False:
-        try:
-            GUIFrame.root.filename = filedialog.asksaveasfilename(initialdir="/", title="Select file",
-                                                         filetypes=(("jpeg files", "*.jpg"), ("all files", "*.*")))
-            # Write to output file
-            with open(GUIFrame.root.filename, 'w') as f:
-                f.write("-" * 35)
-                f.write('\n---- Foxy Port Scanner Output -----\n\n')
-                f.write('Remote Host IP: {}\n'.format(self.e1.get()))
-                f.write("Starting Port: {}\n".format(self.e2.get()))
-                f.write("Ending Port: {}\n".format(self.e3.get()))
-                f.write('\nTimestamp: {:%Y-%m-%d %H:%M:%S}\n'.format(datetime.datetime.now()))
-                f.write("-" * 35 + "\n")
-                f.write('\n'.join(self.foundOpenList))
+    # if self.isRunning == False:
+    try:
+        GUIFrame.root.filename = filedialog.asksaveasfilename(initialdir="/", title="Select file",
+                                                              filetypes=(("jpeg files", "*.jpg"), ("all files", "*.*")))
+        # Write to output file
+        with open(GUIFrame.root.filename, 'w') as f:
+            f.write("-" * 35)
+            f.write('\n---- Foxy Port Scanner Output -----\n\n')
+            f.write('Remote Host IP: {}\n'.format(self.e1.get()))
+            f.write("Starting Port: {}\n".format(self.e2.get()))
+            f.write("Ending Port: {}\n".format(self.e3.get()))
+            f.write('\nTimestamp: {:%Y-%m-%d %H:%M:%S}\n'.format(datetime.datetime.now()))
+            f.write("-" * 35 + "\n")
+            f.write('\n'.join(self.foundOpenList))
 
-            self.updateStatus("Output file created: {}".format(root.filename))
+        self.updateStatus("Output file created: {}".format(root.filename))
 
-        except FileNotFoundError:
-            self.updateStatus("No such file or directory selected...")
-    #else:
-     #       self.updateStatus("Can't save output while running...")
+    except FileNotFoundError:
+        self.updateStatus("No such file or directory selected...")
+        # else:
+        #       self.updateStatus("Can't save output while running...")
