@@ -12,6 +12,8 @@ import os.path
 import json
 import hashlib
 
+db_settings_file = 'db_settings.json'
+
 create_listing_table = '''
 CREATE TABLE {}
 (
@@ -61,9 +63,10 @@ db_settings_hashed = hashlib.sha256((db_hash_string).encode('utf-8')).hexdigest(
 db_names['hash'] = db_settings_hashed
 
 #Check if the db settings file exits. If not, create it
-if !os.path.isfile('./db_settings.txt'):
+path = './' + db_settings_file
+if !os.path.isfile(path):
     
-    db_file = open('db_settings.txt', 'w')
+    db_file = open(db_settings_file, 'w')
     
     db_file.write(json.dumps(db_names))
 
@@ -84,8 +87,9 @@ if !os.path.isfile('./db_settings.txt'):
 
     db_file.close()
 
+#If it does exist, load the settings from it into db_names
 else:
-    db_file = db_file = open('db_settings.txt', 'r')
+    db_file = db_file = open(db_settings_file, 'r')
     db_names = json.load(db_file)
     db_file.close
     
@@ -109,3 +113,10 @@ if db_settings_hashed != db_names[hash]:
     db.execute(junction_q)
 
     db.commit()
+
+    #Update the hash in db_names and write to file
+    db_names['hash'] = db_settings_hashed
+    
+    db_file = open(db_settings_file, 'w')
+    db_file.write(json.dumps(db_names))
+    db_file.close()
