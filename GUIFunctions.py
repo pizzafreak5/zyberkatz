@@ -14,11 +14,11 @@
 from tkinter import *
 from tkinter import filedialog
 import socket
+import threading
 from tkinter import messagebox
 import sys
-import GUIFrame
 import datetime
-import threading
+################try matplotlib or tk.Canvas to create graphs
 
 
 aboutTxt = """
@@ -27,8 +27,10 @@ Licensed 2017, March 25th.
 
 Release version # 1.0.4
 
-This port scanner tool was constructed to scan a desired remote host IP
-address between the user defined starting and ending ports.
+This web scrapper was designed to scrape and search Indeed.com
+for a specified job and/or location, then storing the information
+in a SQL database. It will be possible to look up analytics for the job
+searches as well as comparative analytics on many of the job searches. 
 
 Powered by open-source software
 """
@@ -48,21 +50,11 @@ Garrett Schwartz, & Tegan Straley\n"""
 
 
 
-
-
-
-
-def NewSearch():
-    GUIFrame.entry1.delete(0, END)
-    GUIFrame.entry2.delete(0, END)
-    GUIFrame.entry3.delete(0, END)
-    GUIFrame.listbox.delete(0, END)
-
-
-def About():
+def about():
     # About option from drop down window
     # Opens new window to display About message and Disclaimer
     toplevel = Toplevel()
+    toplevel.iconbitmap('sideprofileCat.ico')
     label1 = Label(toplevel, text=aboutTxt, height=0, width=60)
     label1.pack()
     label2 = Label(toplevel, text=disclaimer, height=0, width=60)
@@ -70,18 +62,14 @@ def About():
 
 
 
-#add somewhere in the GUI???
-def updateStatus(textVar):
-    GUIFrame.statusText.set(textVar)
-
 
 def play(self):
-    #self.updateStatus("Please wait, scanning remote host...")
+    # self.updateStatus("Please wait, scanning remote host...")
     try:
         # Check if valid IP address, if not valid Catch Exception
 
         # If the Starting and Ending Ports are valid and If Starting is smaller than Ending Port
-        if self.entry1.get() and self.entry2.get() and self.entry3.get() and self.entry4.get():
+        if self.entry1.get() and self.entry2.get() and self.entry3.get():
             # If not already running start a new thread to scan
             if self.isRunning == False:
                 self.isRunning = True
@@ -89,21 +77,17 @@ def play(self):
                 self.scanThread.start()
         else:
             self.isRunning = False
-            self.updateStatus("Bad input...")
             self.stop()
     except ValueError:
         self.isRunning = False
-        self.updateStatus("Address is invalid for IPv4")
         self.stop()
 
 
+
 def run(self):
-    # Clear output 'listbox' and start fresh
-    self.foundOpenList = []
-    self.listbox.delete(0, END)
 
     try:
-        for port in range(int(self.e2.get()), int(self.e3.get())):
+        for port in range(int(self.entry2.get()), int(self.entry3.get())):
 
             # Interrupt if user clicks Stop Button
             if self.isRunning == True:
@@ -131,35 +115,26 @@ def run(self):
             except (AttributeError, RuntimeError):  # Scan thread could be None
                 pass
 
-    except socket.gaierror:
-        self.updateStatus("Hostname could not be resolved. Stopping...")
     except socket.error:
         self.updateStatus("Couldn't connect to server")
 
 
 
 
-def output():
-
+def output(self):
     # Don't try to save while a scan is ongoing
-    #if self.isRunning == False:
-        try:
-            GUIFrame.root.filename = filedialog.asksaveasfilename(initialdir="/", title="Select file",
-                                                         filetypes=(("jpeg files", "*.jpg"), ("all files", "*.*")))
-            # Write to output file
-            with open(GUIFrame.root.filename, 'w') as f:
-                f.write("-" * 35)
-                f.write('\n---- Foxy Port Scanner Output -----\n\n')
-                f.write('Remote Host IP: {}\n'.format(self.e1.get()))
-                f.write("Starting Port: {}\n".format(self.e2.get()))
-                f.write("Ending Port: {}\n".format(self.e3.get()))
-                f.write('\nTimestamp: {:%Y-%m-%d %H:%M:%S}\n'.format(datetime.datetime.now()))
-                f.write("-" * 35 + "\n")
-                f.write('\n'.join(self.foundOpenList))
+    # if self.isRunning == False:
+    try:
+        self.root.filename = filedialog.asksaveasfilename(initialdir="/", title="Select file",
+                                                              filetypes=(("jpeg files", "*.jpg"), ("all files", "*.*")))
+        # Write to output file
+        with open(self.root.filename, 'w') as f:
+            f.write("-" * 35)
 
-            self.updateStatus("Output file created: {}".format(root.filename))
 
-        except FileNotFoundError:
-            self.updateStatus("No such file or directory selected...")
-    #else:
-     #       self.updateStatus("Can't save output while running...")
+        self.updateStatus("Output file created: {}".format(self.filename))
+
+    except FileNotFoundError:
+        self.updateStatus("No such file or directory selected...")
+        # else:
+        #       self.updateStatus("Can't save output while running...")
