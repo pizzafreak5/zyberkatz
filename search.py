@@ -14,7 +14,7 @@ import hashlib
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class Search:
 
-    def __init__(self, filename, search_options):
+    def __init__(self, search_options):
 
         self.search_hash = ''
         self.search_options = {'search_title':'',
@@ -30,16 +30,7 @@ class Search:
                                'global_search_junction': 'search_junction',
                                'global_db_name':'zyber.db'}
 
-        try:
-            file = open(filename, 'r')
-            self.options = json.load(file)
-            file.close()
-        except:
-            err = 'search.py - could not read file {}'.format(filename)
-            raise Exception(err)
-
         #check for options passed in
-
         for key in self.search_options:
             if key in search_options:
                 self.search_options[key] = search_options[key]
@@ -61,7 +52,10 @@ class Search:
         #---------------
         db = sqlite3.connect(self.search_options['global_db_name']) #Connect to the project database
         db_cursor = db.cursor()
-
+        
+        #Delete the previous table temporary
+        db_cursor.execute('drop table if exists temporary')
+        
         #create a new table that will be joined later to the main listings table
         db_cursor.execute('''
 CREATE TABLE temporary
@@ -103,10 +97,9 @@ job_text         TEXT
             'job_title_tag':'a'
         }
 
-        #Set options in scraper to options in search
         for option in self.search_options:
             if option in settings:
-                settings[option] = self.search_options[settings]
+                settings[option] = self.search_options[option]
 
         #---------------
         #RUN SCRAPER
@@ -125,31 +118,21 @@ job_text         TEXT
 
         search_value = self.search_options['search_value']
         search_title = self.search_options['search_title']
-        search_loc = self.search_options['job_location']
-        search_sal = self.search_options['job_salary_est']
-        search_exp = self.search_options['job_experience']
-        search_type = self.search_options['job_type']
+        search_loc   = self.search_options['job_location']
+        search_sal   = self.search_options['job_salary_est']
+        search_exp   = self.search_options['job_experience']
+        search_type  = self.search_options['job_type']
         
         hash_string = search_date + search_value + search_title + search_loc + search_sal + search_exp + search_type
-        
         search_hash = hashlib.sha256((hash_string).encode('utf-8')).hexdigest()
         
         #Create the val string to input into the DB. The order here is important
-        values = [search_hash, search_title, search_date, search_value, search_loc, search_type, search_exp, search_sal]
-        values_string = ''
-        
-        for elem in values:
-            if values_string == '':
-                values_string = elem
-            else:
-                values_string = values_string + ', ' + elem
-        
-        #Format the query string to run on the DB
-        q = 'INSERT INTO {} VALUES ({});'.format(self.search_options['global_search_table'], values_string)
+        values = (search_hash, search_title, search_date, search_value, search_loc, search_type, search_exp, search_sal)
 
-        print('search.py - Executing on DB:{}'.format(q))
-
-        db_cursor.execute(q)
+        #Query to insert into the table search 
+        q = 'INSERT INTO search (search_hash, search_title, search_date, search_value, search_loc, job_type, job_exp, job_salary_min) VALUES (?,?,?,?,?,?,?,?)'
+        
+        db_cursor.execute(q, values)
         db.commit()
         
 
@@ -158,31 +141,18 @@ job_text         TEXT
         #---------------
 
         #append the new rows onto the global listing table
-        q = 'SELECT * FROM temporary WHERE hash_val NOT IN {};'.format(self.search_options['global_listings_table'])
-        temp_data = db_cursor.execute(q)
-        append_string = 'INSERT INTO {} VALUES({});'
+        q = 'SELECT * FROM temporary WHERE hash_val NOT IN (SElECT hash_val FROM listing);'
+        db_cursor.execute(q)
+        temp_data = db_cursor.fetchall()
+        q = 'INSERT INTO listing (hash_val, company, time_posted, job_title, job_desc, job_loc, job_exp, salary_est, job_type, link, job_text) VALUES(?,?,?,?,?,?,?,?,?,?,?);'
 
         for row in temp_data:
-
-            #Create the values string for each row
-            values_string = ''
-            for entry in row:
-
-                #In order to get a value string that looks like
-                # a, b, c, d
-                #concatinate the first value without a comma
-                if values_string == '':
-                    values_string = str(entry)
-                else:
-                    values_string = values_string + ', ' + str(entry)
-
-            insert_string = append_string.format(self.search_options, values_string)
-            print('search.py - Executing {} on DB.'.format(insert_string))
-
-            db_cursor.execute(insert_string)
+            #Create the tuple for each row
+            values = tuple(row)
+            
+            db_cursor.execute(q, values)
 
         db.commit()
-
 
         #---------------
         #APPEND TO JUNCTION TABLE
@@ -191,17 +161,13 @@ job_text         TEXT
         q = 'SELECT hash_val FROM temporary'
         hash_values = db_cursor.execute(q)
 
-        insert_string = 'INSERT INTO {} VALUES ({});'
-
         for row in hash_values:
-            value_string = '{}, {}'.format(row[0], search_hash)
-            q = insert_string.format(self.search_options['global_search_junction'], value_string)
-            db_cursor.execute(q)
+            values = (row[0], search_hash)
+            print (values)
+            q = "INSERT INTO junction (hash_val, search_hash) VALUES (?,?);"
+            db_cursor.execute(q, values)
 
         db.commit()
-        
-
-        
 
     #Returns the url to search
     def __construct_url(self):

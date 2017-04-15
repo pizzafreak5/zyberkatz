@@ -12,10 +12,8 @@ import os.path
 import json
 import hashlib
 
-db_settings_file = 'db_settings.json'
-
 create_listing_table = '''
-CREATE TABLE {}
+CREATE TABLE if not exists listing
 (
 hash_val         TEXT PRIMARY KEY NOT NULL,
 company          TEXT,
@@ -32,91 +30,47 @@ job_text         TEXT
 '''
 
 create_search_table = '''
-CREATE TABLE {}
+CREATE TABLE if not exists search
 (
 search_hash	TEXT PRIMARY KEY,
 search_title	TEXT,
 search_date	TEXT,
 search_value	TEXT,
 search_loc	TEXT,
-job_type	TEXT,
+job_type       TEXT,
 job_exp		TEXT,
 job_salary_min	TEXT
 );
 '''
+
 create_junction_table = '''
-CREATE TABLE {}
+CREATE TABLE if not exists junction
 (
-hash_val	TEXT FOREIGN KEY NOT NULL,
-search_hash	TEXT FOREIGN KEY NOT NULL,
+hash_val       TEXT,
+search_hash    TEXT,
+FOREIGN KEY(hash_val) REFERENCES listing(hash_val),
+FOREIGN KEY(search_hash) REFERENCES search(search_hash)
 );
 '''
 
-db_names = {'db_name':'zyberkatz.db',
-            'global_listing_table':'listing',
-            'global_search_table':'search',
-            'global_junction_table':'junction'}
 
-db_hash_string = db_names['db_name'] + db_names['global_listing_table'] + db_names['global_search_table'] + db_names['global_junction_table']
-db_settings_hashed = hashlib.sha256((db_hash_string).encode('utf-8')).hexdigest()
-
-db_names['hash'] = db_settings_hashed
-
-#Check if the db settings file exits. If not, create it
-path = './' + db_settings_file
-if !os.path.isfile(path):
+#If there is different values open them, otherwise default and then write to file the default
+settings_file = open('db_settings.json', 'w+')
+try:
+    information = json.load(settings_file)
     
-    db_file = open(db_settings_file, 'w')
-    
-    db_file.write(json.dumps(db_names))
+except:
+    information = {'db_name':'zyber.db'}
 
-    #In this case, this is the first startup, so the database
-    #needs to be initialized
-    db = sql.connect(db_names['db_name'])
-    db_cursor = db.cursor()
+settings_file.seek(0)
+write_string = json.dumps(information)
+settings_file.write(write_string)
+settings_file.truncate()
+settings_file.close()
 
-    listing_q = create_listing_table.format(db_names['global_listing_table'])
-    search_q = create_search_table.format(db_names['global_search_table'])
-    junction_q = create_junction_table.format(db_names['global_junction_table'])
+#Create a database and the necessary tables needed
+db = sql.connect(information['db_name'])
+db.execute(create_listing_table)
+db.execute(create_search_table)
+db.execute(create_junction_table)   
 
-    db.execute(listing_q)
-    db.execute(search_q)
-    db.execute(junction_q)
-
-    db.commit()
-
-    db_file.close()
-
-#If it does exist, load the settings from it into db_names
-else:
-    db_file = db_file = open(db_settings_file, 'r')
-    db_names = json.load(db_file)
-    db_file.close
-    
-#Check to see if the settings match the hash. If they don't
-#the settings have most likely been edited and the db needs
-#to be re-initialized
-
-check_hash = db_names['db_name'] + db_names['global_listing_table'] + db_names['global_search_table'] + db_names['global_junction_table']
-db_settings_hashed = hashlib.sha256((db_hash_string).encode('utf-8')).hexdigest()
-
-if db_settings_hashed != db_names[hash]:
-    db = sql.connect(db_names['db_name'])
-    db_cursor = db.cursor()
-
-    listing_q = create_listing_table.format(db_names['global_listing_table'])
-    search_q = create_search_table.format(db_names['global_search_table'])
-    junction_q = create_junction_table.format(db_names['global_junction_table'])
-
-    db.execute(listing_q)
-    db.execute(search_q)
-    db.execute(junction_q)
-
-    db.commit()
-
-    #Update the hash in db_names and write to file
-    db_names['hash'] = db_settings_hashed
-    
-    db_file = open(db_settings_file, 'w')
-    db_file.write(json.dumps(db_names))
-    db_file.close()
