@@ -1,9 +1,17 @@
+# FILE: search.py
+# Singular search request that adds entries to the database
+# Written by Garrett
+# Edited by Tegan
+
+
 import scraper
 import json
 import sqlite3
 import datetime
 import hashlib
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class Search:
 
     def __init__(self, filename, search_options):
@@ -37,16 +45,16 @@ class Search:
                 self.search_options[key] = search_options[key]
         
 
-    def set_search_option(key, option):
+    def set_search_option(self, key, option):
 
-        if key in search_options():
+        if key in self.search_options():
             self.search_options[key] = option
         else:
             err = 'search.py - set_search_option() - key {} is not a valid option key'.format(key)
         
 
     #How to call:  
-    def search():
+    def search(self):
 
         #---------------
         #DB SETUP
@@ -127,22 +135,22 @@ job_text         TEXT
         search_hash = hashlib.sha256((hash_string).encode('utf-8')).hexdigest()
         
         #Create the val string to input into the DB. The order here is important
-        values = [search_hash search_title, search_date, search_value, search_loc, search_type, search_exp, search_sal]
+        values = [search_hash, search_title, search_date, search_value, search_loc, search_type, search_exp, search_sal]
         values_string = ''
         
         for elem in values:
-            if values_string = '':
+            if values_string == '':
                 values_string = elem
-            else
+            else:
                 values_string = values_string + ', ' + elem
         
         #Format the query string to run on the DB
         q = 'INSERT INTO {} VALUES ({});'.format(self.search_options['global_search_table'], values_string)
 
-        print('search.py - Exicuting on DB:{}'.format(q))
+        print('search.py - Executing on DB:{}'.format(q))
 
         db_cursor.execute(q)
-        db_.commit()
+        db.commit()
         
 
         #---------------
@@ -196,7 +204,7 @@ job_text         TEXT
         
 
     #Returns the url to search
-    def __construct_url():
+    def __construct_url(self):
 
         url_form_0 = 'https://www.indeed.com/jobs?q={}'
         url_form_1 = 'https://www.indeed.com/q-{}-{}-l-{}-jobs.html'#attempt to not use
