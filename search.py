@@ -126,11 +126,23 @@ job_text         TEXT
         
         search_hash = hashlib.sha256((hash_string).encode('utf-8')).hexdigest()
         
-        #Create the val string
+        #Create the val string to input into the DB. The order here is important
+        values = [search_hash search_title, search_date, search_value, search_loc, search_type, search_exp, search_sal]
+        values_string = ''
         
+        for elem in values:
+            if values_string = '':
+                values_string = elem
+            else
+                values_string = values_string + ', ' + elem
         
-        
-        q = 'INSERT INTO {} VALUES ({});'
+        #Format the query string to run on the DB
+        q = 'INSERT INTO {} VALUES ({});'.format(self.search_options['global_search_table'], values_string)
+
+        print('search.py - Exicuting on DB:{}'.format(q))
+
+        db_cursor.execute(q)
+        db_.commit()
         
 
         #---------------
@@ -138,9 +150,9 @@ job_text         TEXT
         #---------------
 
         #append the new rows onto the global listing table
-        q = 'SELECT * FROM listings WHERE hash_val NOT IN {};'.format(self.search_options['global_listings_table'])
+        q = 'SELECT * FROM temporary WHERE hash_val NOT IN {};'.format(self.search_options['global_listings_table'])
         temp_data = db_cursor.execute(q)
-        append_string = 'INSERT INTO {} VALUES({})'
+        append_string = 'INSERT INTO {} VALUES({});'
 
         for row in temp_data:
 
@@ -157,8 +169,28 @@ job_text         TEXT
                     values_string = values_string + ', ' + str(entry)
 
             insert_string = append_string.format(self.search_options, values_string)
+            print('search.py - Executing {} on DB.'.format(insert_string))
 
-        #
+            db_cursor.execute(insert_string)
+
+        db.commit()
+
+
+        #---------------
+        #APPEND TO JUNCTION TABLE
+        #---------------
+
+        q = 'SELECT hash_val FROM temporary'
+        hash_values = db_cursor.execute(q)
+
+        insert_string = 'INSERT INTO {} VALUES ({});'
+
+        for row in hash_values:
+            value_string = '{}, {}'.format(row[0], search_hash)
+            q = insert_string.format(self.search_options['global_search_junction'], value_string)
+            db_cursor.execute(q)
+
+        db.commit()
         
 
         
