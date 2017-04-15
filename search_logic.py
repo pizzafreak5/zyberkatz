@@ -43,8 +43,16 @@ def run_search(job_title, location, search_title):
 
         
 
-
+def get_jobs_with_field(field, value):
         
+        q = '''
+SELECT {} 
+FROM listing 
+WHERE hash_val IN
+(SELECT hash_val FROM junction
+WHERE search_hash IN
+(SELECT search_hash FROM search
+WHERE job_exp = 'mid_level'));'''
         
 
         

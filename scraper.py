@@ -113,7 +113,7 @@ class scraper:
     def convert_time_posted(self, time):
         digit = time.split(' ')       
         today = datetime.now()
-	digit[0] = digit[0].replace("+", "")
+        digit[0] = digit[0].replace("+", "")
         #subtract it as days
         if 'day' in time:
             today = today - timedelta(days=int(digit[0]))
