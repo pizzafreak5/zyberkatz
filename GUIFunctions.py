@@ -14,11 +14,12 @@
 from tkinter import *
 from tkinter import filedialog
 import socket
+import threading
 from tkinter import messagebox
 import sys
-#import GUIFrame
 import datetime
-import threading
+################try matplotlib or tk.Canvas to create graphs
+
 
 aboutTxt = """
 Katz Attack Triple Threat Z'craper: (KATTZ)
@@ -59,6 +60,18 @@ def about():
     label2 = Label(toplevel, text=disclaimer, height=0, width=60)
     label2.pack()
 
+def startGUISearch():
+    print('hi')
+
+
+
+
+
+
+
+
+
+
 
 def play(self):
     # self.updateStatus("Please wait, scanning remote host...")
@@ -66,7 +79,7 @@ def play(self):
         # Check if valid IP address, if not valid Catch Exception
 
         # If the Starting and Ending Ports are valid and If Starting is smaller than Ending Port
-        if self.entry1.get() and self.entry2.get() and self.entry3.get() and self.entry4.get():
+        if self.entry1.get() and self.entry2.get() and self.entry3.get():
             # If not already running start a new thread to scan
             if self.isRunning == False:
                 self.isRunning = True
@@ -74,21 +87,17 @@ def play(self):
                 self.scanThread.start()
         else:
             self.isRunning = False
-            self.updateStatus("Bad input...")
             self.stop()
     except ValueError:
         self.isRunning = False
-        self.updateStatus("Address is invalid for IPv4")
         self.stop()
 
 
+
 def run(self):
-    # Clear output 'listbox' and start fresh
-    self.foundOpenList = []
-    self.listbox.delete(0, END)
 
     try:
-        for port in range(int(self.e2.get()), int(self.e3.get())):
+        for port in range(int(self.entry2.get()), int(self.entry3.get())):
 
             # Interrupt if user clicks Stop Button
             if self.isRunning == True:
@@ -116,30 +125,24 @@ def run(self):
             except (AttributeError, RuntimeError):  # Scan thread could be None
                 pass
 
-    except socket.gaierror:
-        self.updateStatus("Hostname could not be resolved. Stopping...")
     except socket.error:
         self.updateStatus("Couldn't connect to server")
 
 
-def output():
+
+
+def output(self):
     # Don't try to save while a scan is ongoing
     # if self.isRunning == False:
     try:
-        GUIFrame.root.filename = filedialog.asksaveasfilename(initialdir="/", title="Select file",
+        self.root.filename = filedialog.asksaveasfilename(initialdir="/", title="Select file",
                                                               filetypes=(("jpeg files", "*.jpg"), ("all files", "*.*")))
         # Write to output file
-        with open(GUIFrame.root.filename, 'w') as f:
+        with open(self.root.filename, 'w') as f:
             f.write("-" * 35)
-            f.write('\n---- Foxy Port Scanner Output -----\n\n')
-            f.write('Remote Host IP: {}\n'.format(self.e1.get()))
-            f.write("Starting Port: {}\n".format(self.e2.get()))
-            f.write("Ending Port: {}\n".format(self.e3.get()))
-            f.write('\nTimestamp: {:%Y-%m-%d %H:%M:%S}\n'.format(datetime.datetime.now()))
-            f.write("-" * 35 + "\n")
-            f.write('\n'.join(self.foundOpenList))
 
-        self.updateStatus("Output file created: {}".format(root.filename))
+
+        self.updateStatus("Output file created: {}".format(self.filename))
 
     except FileNotFoundError:
         self.updateStatus("No such file or directory selected...")

@@ -6,14 +6,12 @@
 
 # file: GUIFrame.py
 # Creates the front-end side of a port scanner with Python's tkinter libraries.
-# Pack and grid inserts are found at the bottom of the file.
 
 
 
 import tkinter as tk
 import sys
 from tkinter import filedialog
-#from GUIFunctions import *
 import GUIFunctions
 
 
@@ -22,8 +20,8 @@ LARGE_FONT = ("fixedsys", 18)
 class mainGUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.title("KATTZraper");
-        self.iconbitmap('sideprofileCat.ico')
+        self.title("KATTZraper")
+        self.iconbitmap('sideprofileCat.ico') # Sets the upper left-hand logo
 
         container = tk.Frame(self)
 
@@ -73,21 +71,21 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        frame0 = tk.Frame(self)
-        frame1 = tk.Frame(self)
-        frame2 = tk.Frame(self)
-        label = tk.Label(frame0, text="K.A.T.T.Z. web scraper", font=LARGE_FONT).grid(row=0, column=0, padx=20, pady=20)
-        jobTitleEntry = tk.Label(frame1, text="Job type").grid(row=1, padx=10, pady=10)
-        entry1 = tk.Entry(frame1, text="").grid(row=1, column=1, padx=10, pady=10)
-        stateEntry = tk.Label(frame1, text="State").grid(row=2,  padx=10, pady=10)
-        entry2 = tk.Entry(frame1).grid(row=2, column=1, padx=10, pady=10)
-        CityEntry = tk.Label(frame1, text="City").grid(row=3,  padx=10, pady=10)
-        entry3 = tk.Entry(frame1).grid(row=3, column=1, padx=10, pady=10)
-        searchButton = tk.Button(frame2, text="Search Indeed.com").grid(row=4,padx=10, pady=10 )  # center the search button?
+        self.frame0 = tk.Frame(self)
+        self.frame1 = tk.Frame(self)
+        self.frame2 = tk.Frame(self)
+        self.label = tk.Label(self.frame0, text="K.A.T.T.Z. web scraper", font=LARGE_FONT).grid(row=0, column=0, padx=20, pady=20)
+        self.jobTitleEntry = tk.Label(self.frame1, text="Job type").grid(row=1, padx=10, pady=10)
+        self.entry1 = tk.Entry(self.frame1, text="").grid(row=1, column=1, padx=10, pady=10)
+        self.stateEntry = tk.Label(self.frame1, text="State").grid(row=2,  padx=10, pady=10)
+        self.entry2 = tk.Entry(self.frame1).grid(row=2, column=1, padx=10, pady=10)
+        self.CityEntry = tk.Label(self.frame1, text="City").grid(row=3,  padx=10, pady=10)
+        self.entry3 = tk.Entry(self.frame1).grid(row=3, column=1, padx=10, pady=10)
+        self.searchButton = tk.Button(self.frame2, text="Search Indeed.com", command=newSearch).grid(row=4,padx=10, pady=10 )
 
-        frame0.pack()
-        frame1.pack()
-        frame2.pack()
+        self.frame0.pack()
+        self.frame1.pack()
+        self.frame2.pack()
 
 
 class resultsPage(tk.Frame):
@@ -136,5 +134,6 @@ app.mainloop()
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# def newSearch(self):
-#     StartPage
+def newSearch():
+    something = app.StartPage.frame1.entry1.get()
+    print(something)
