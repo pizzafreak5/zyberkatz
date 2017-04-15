@@ -60,16 +60,6 @@ def about():
     label2 = Label(toplevel, text=disclaimer, height=0, width=60)
     label2.pack()
 
-def startGUISearch():
-    print('hi')
-
-
-
-
-
-
-
-
 
 
 

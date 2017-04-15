@@ -14,8 +14,12 @@ import sys
 from tkinter import filedialog
 import GUIFunctions
 
-
+# Font size for the title
 LARGE_FONT = ("fixedsys", 18)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class mainGUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -36,11 +40,11 @@ class mainGUI(tk.Tk):
 
         fileMenu = tk.Menu(menu)
         menu.add_cascade(label="File", menu=fileMenu)
-        fileMenu.add_command(label="Search", command=lambda: self.showFrame(StartPage))
-        fileMenu.add_command(label="Results",  command=lambda: self.showFrame(resultsPage))
-        fileMenu.add_command(label="Analytics",  command=lambda: self.showFrame(analyticsPage))
-        fileMenu.add_command(label="Import",  command=lambda: self.showFrame(importPage))
-        fileMenu.add_command(label="Export",  command=lambda: self.showFrame(exportPage))
+        fileMenu.add_command(label="Search", command=lambda: self.showFrame("StartPage"))
+        fileMenu.add_command(label="Results",  command=lambda: self.showFrame("resultsPage"))
+        fileMenu.add_command(label="Analytics",  command=lambda: self.showFrame("analyticsPage"))
+        fileMenu.add_command(label="Import",  command=lambda: self.showFrame("importPage"))
+        fileMenu.add_command(label="Export",  command=lambda: self.showFrame("exportPage"))
         fileMenu.add_command(label="Exit", command=self.quit)
 
         editMenu = tk.Menu(menu)  # what's under 'About' menu item
@@ -55,37 +59,55 @@ class mainGUI(tk.Tk):
         self.frames = {}
 
         for F in (StartPage, resultsPage, analyticsPage, importPage, exportPage):
-            frame = F(container, self)
-            self.frames[F] = frame
+            page_name = F.__name__
+            frame = F(parent=container, controller=self)
+            self.frames[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.showFrame(StartPage)
+        self.showFrame("StartPage")
 
-    def showFrame(self, cont):
-        frame = self.frames[cont]
+    def showFrame(self, page_name):
+        frame = self.frames[page_name]
         frame.tkraise()
 
 
 
 class StartPage(tk.Frame):
+
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        self.shared_data = {
+            "entry1": tk.StringVar(),
+            "entry2": tk.StringVar(),
+            "entry3": tk.StringVar()
+        }
+
+        def newSearch():
+            print(self.shared_data["entry1"].get())
+            print(self.shared_data["entry2"].get())
+            print(self.shared_data["entry3"].get())
+
 
         self.frame0 = tk.Frame(self)
         self.frame1 = tk.Frame(self)
         self.frame2 = tk.Frame(self)
+
         self.label = tk.Label(self.frame0, text="K.A.T.T.Z. web scraper", font=LARGE_FONT).grid(row=0, column=0, padx=20, pady=20)
         self.jobTitleEntry = tk.Label(self.frame1, text="Job type").grid(row=1, padx=10, pady=10)
-        self.entry1 = tk.Entry(self.frame1, text="").grid(row=1, column=1, padx=10, pady=10)
+        self.entry1 = tk.Entry(self.frame1,textvariable=self.shared_data["entry1"]).grid(row=1, column=1, padx=10, pady=10)
         self.stateEntry = tk.Label(self.frame1, text="State").grid(row=2,  padx=10, pady=10)
-        self.entry2 = tk.Entry(self.frame1).grid(row=2, column=1, padx=10, pady=10)
+        self.entry2 = tk.Entry(self.frame1,textvariable=self.shared_data["entry2"]).grid(row=2, column=1, padx=10, pady=10)
         self.CityEntry = tk.Label(self.frame1, text="City").grid(row=3,  padx=10, pady=10)
-        self.entry3 = tk.Entry(self.frame1).grid(row=3, column=1, padx=10, pady=10)
-        self.searchButton = tk.Button(self.frame2, text="Search Indeed.com", command=newSearch).grid(row=4,padx=10, pady=10 )
+        self.entry3 = tk.Entry(self.frame1, textvariable=self.shared_data["entry3"]).grid(row=3, column=1, padx=10, pady=10)
+        self.searchButton = tk.Button(self.frame2,  text="Search Indeed.com", command=newSearch).grid(row=4,padx=10, pady=10 )
 
         self.frame0.pack()
         self.frame1.pack()
         self.frame2.pack()
+
+
 
 
 class resultsPage(tk.Frame):
@@ -128,12 +150,9 @@ class exportPage(tk.Frame):
         entry2Button = tk.Button(self, text="Export destination", command=GUIFunctions.output).pack(padx=5, pady=5)
 
 
+
 app = mainGUI()
 app.mainloop()
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def newSearch():
-    something = app.StartPage.frame1.entry1.get()
-    print(something)
+
+
