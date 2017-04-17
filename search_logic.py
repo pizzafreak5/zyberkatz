@@ -43,8 +43,34 @@ def run_search(job_title, location, search_title):
 
         
 
+def get_jobs_with_field(field, value):
+        
+        q = '''
+SELECT {} 
+FROM listing 
+WHERE hash_val IN
+(SELECT hash_val FROM junction
+WHERE search_hash IN
+(SELECT search_hash FROM search
+WHERE job_exp = 'mid_level'));'''
+
+#Time strings come in as MM-DD-YY
+def jobs_v_time(time_start, time_end, sal_min, sal_max, job_type_set, job_exp_set):
+
+        #parse the time strings
+        start_time = time_start.split('-')
+        end_time - time_end.split('-')
+        #Get job listings within time range
 
         
-        
+def pie_graph_data(search_title, search_date, attribute, attribute_values):
 
+        q = '''
+SELECT {} FROM search
+WHERE search_title = '{}'
+AND search_date = '{}';'''
+
+        listings = 
+
+        
         

@@ -97,6 +97,9 @@ job_text         TEXT
             'job_title_tag':'a'
         }
 
+        url = self.__construct_url()
+        settings['website_url'] = url
+
         for option in self.search_options:
             if option in settings:
                 settings[option] = self.search_options[option]
@@ -159,11 +162,11 @@ job_text         TEXT
         #---------------
 
         q = 'SELECT hash_val FROM temporary'
-        hash_values = db_cursor.execute(q)
+        db_cursor.execute(q)
+        hash_values = db_cursor.fetchall()
 
         for row in hash_values:
             values = (row[0], search_hash)
-            print (values)
             q = "INSERT INTO junction (hash_val, search_hash) VALUES (?,?);"
             db_cursor.execute(q, values)
 
@@ -172,8 +175,8 @@ job_text         TEXT
     #Returns the url to search
     def __construct_url(self):
 
-        url_form_0 = 'https://www.indeed.com/jobs?q={}'
-        url_form_1 = 'https://www.indeed.com/q-{}-{}-l-{}-jobs.html'#attempt to not use
+        url_form_0 = 'http://www.indeed.com/jobs?q={}'
+        url_form_1 = 'http://www.indeed.com/q-{}-{}-l-{}-jobs.html'#attempt to not use
 
         query_job_salary = '{}+{}'
         query_location = '&l={}'
@@ -197,18 +200,18 @@ job_text         TEXT
         else:
             query_job_salary = self.search_options['search_value']
 
-        query_string.append(query_job_salary)
+        query_string = query_string + query_job_salary.replace(' ', '+').replace(',','%2c')
 
 
         #Note, if multiple searches are to be run from one search object, re-write these to use temp
         #strings rather than overwriting the format strings
         if self.search_options['job_type'] != '':
             query_job_type = query_job_type.format(self.search_options['job_type'])
-            query_string.append(query_job_type)
+            query_string = query_string + query_job_type
 
-        if self.search_options['location'] != '':
+        if self.search_options['job_location'] != '':
             query_location = query_location.format(self.search_options['job_location'])
-            query_string.append(query_location)
+            query_string = query_string + query_location.replace(' ', '+').replace(',','%2C')
 
         else:
             err = 'search.py - __construct_url() - search needs a location!'
@@ -216,7 +219,7 @@ job_text         TEXT
 
         if self.search_options['job_experience'] != '':
             query_exp_level = query_exp_level.format(self.search_options['job_experience'])
-            query_string.append(query_job_type)
+            query_string = query_string + query_exp_level
 
         url = url_form_0.format(query_string)
 
@@ -224,6 +227,8 @@ job_text         TEXT
         #for this
         print('\nFinal Search URL: {}'.format(url))
         self.search_options['website_url'] = url
+
+        
 
         return url
         
