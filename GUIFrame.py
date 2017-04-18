@@ -16,7 +16,8 @@ import GUIFunctions
 
 # Font size for the title
 LARGE_FONT = ("fixedsys", 18)
-SMALL_FONT = ("comic sans ms", 7)
+SMALL_FONT = ("arial", 7)
+BUTTON_FONT = ("arial", 16)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,14 +99,14 @@ class StartPage(tk.Frame):
         self.label = tk.Label(self.frame0, text="K.A.T.T.Z. web scraper", font=LARGE_FONT).grid(row=0, column=0, padx=20, pady=20)
         self.jobTitleEntry = tk.Label(self.frame1, text="Job Title").grid(row=1, padx=10, pady=2)
         self.entry1 = tk.Entry(self.frame1,textvariable=self.shared_data["entry1"]).grid(row=1, column=1, padx=10, pady=2)
-        self.example1 = tk.Label(self.frame1, text = "example: Software engineer", font = SMALL_FONT).grid(row=2, column= 1)
+        self.example1 = tk.Label(self.frame1, text = "ex: Software engineer", font = SMALL_FONT).grid(row=2, column= 1)
         self.stateEntry = tk.Label(self.frame1, text="State").grid(row=3,  padx=10, pady=2)
         self.entry2 = tk.Entry(self.frame1,textvariable=self.shared_data["entry2"]).grid(row=3, column=1, padx=10, pady=2)
-        self.example2 = tk.Label(self.frame1, text = "examples: CO, Colorado, colorado", font = SMALL_FONT).grid(row=4, column= 1)
+        self.example2 = tk.Label(self.frame1, text = "ex: CO, Colorado, colorado", font = SMALL_FONT).grid(row=4, column= 1)
         self.CityEntry = tk.Label(self.frame1, text="City").grid(row=5,  padx=10, pady=2)
         self.entry3 = tk.Entry(self.frame1, textvariable=self.shared_data["entry3"]).grid(row=5, column=1, padx=10, pady=2)
-        self.example3 = tk.Label(self.frame1, text = "examples: Denver, denver", font = SMALL_FONT).grid(row=6, column= 1)
-        self.searchButton = tk.Button(self.frame2,  text="Search Indeed.com", command=newSearch).grid(row=7,padx=10, pady=10 )
+        self.example3 = tk.Label(self.frame1, text = "ex: Denver, denver", font = SMALL_FONT).grid(row=6, column= 1)
+        self.searchButton = tk.Button(self.frame2,  text="Search Indeed.com", font= BUTTON_FONT, command=newSearch).grid(row=7,padx=10, pady=10 )
 
         self.frame0.pack()
         self.frame1.pack()
@@ -117,11 +118,12 @@ class StartPage(tk.Frame):
 class resultsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        title = tk.Label(self, text="Choose a job type").pack(padx=10, pady=10)
+        title = tk.Label(self, text="Select job to view results").pack(padx=10, pady=10)
         savedSearch = tk.StringVar(self)
-        savedSearch.set("search")  # default saved search
+        savedSearch.set("job title")  # default saved search
         savedSearchOption = tk.OptionMenu(self, savedSearch, "Software Engineer", "Nurse")
         savedSearchOption.pack(padx=5, pady=5)
+        self.resultsButton = tk.Button(self,  text="View results", font=BUTTON_FONT).pack(padx=20, pady=20 )
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class analyticsPage(tk.Frame):
@@ -142,6 +144,8 @@ class analyticsPage(tk.Frame):
         category.set("Category")  # default saved search
         categoryOptions = tk.OptionMenu(self, category, "Category", "Pay grade", "Job experience level", "Job type" )
         categoryOptions.pack( padx=5, pady=5)
+
+        self.graphButton = tk.Button(self,  text="Create graph", font=BUTTON_FONT).pack(padx=20, pady=20 )
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class importPage(tk.Frame):
