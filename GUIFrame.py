@@ -16,6 +16,7 @@ import GUIFunctions
 
 # Font size for the title
 LARGE_FONT = ("fixedsys", 18)
+SMALL_FONT = ("comic sans ms", 7)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,7 +40,7 @@ class mainGUI(tk.Tk):
 
 
         fileMenu = tk.Menu(menu)
-        menu.add_cascade(label="File", menu=fileMenu)
+        menu.add_cascade(label="Menu", menu=fileMenu)
         fileMenu.add_command(label="Search", command=lambda: self.showFrame("StartPage"))
         fileMenu.add_command(label="Results",  command=lambda: self.showFrame("resultsPage"))
         fileMenu.add_command(label="Analytics",  command=lambda: self.showFrame("analyticsPage"))
@@ -71,7 +72,7 @@ class mainGUI(tk.Tk):
         frame.tkraise()
 
 
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class StartPage(tk.Frame):
 
 
@@ -95,13 +96,16 @@ class StartPage(tk.Frame):
         self.frame2 = tk.Frame(self)
 
         self.label = tk.Label(self.frame0, text="K.A.T.T.Z. web scraper", font=LARGE_FONT).grid(row=0, column=0, padx=20, pady=20)
-        self.jobTitleEntry = tk.Label(self.frame1, text="Job type").grid(row=1, padx=10, pady=10)
-        self.entry1 = tk.Entry(self.frame1,textvariable=self.shared_data["entry1"]).grid(row=1, column=1, padx=10, pady=10)
-        self.stateEntry = tk.Label(self.frame1, text="State").grid(row=2,  padx=10, pady=10)
-        self.entry2 = tk.Entry(self.frame1,textvariable=self.shared_data["entry2"]).grid(row=2, column=1, padx=10, pady=10)
-        self.CityEntry = tk.Label(self.frame1, text="City").grid(row=3,  padx=10, pady=10)
-        self.entry3 = tk.Entry(self.frame1, textvariable=self.shared_data["entry3"]).grid(row=3, column=1, padx=10, pady=10)
-        self.searchButton = tk.Button(self.frame2,  text="Search Indeed.com", command=newSearch).grid(row=4,padx=10, pady=10 )
+        self.jobTitleEntry = tk.Label(self.frame1, text="Job Title").grid(row=1, padx=10, pady=2)
+        self.entry1 = tk.Entry(self.frame1,textvariable=self.shared_data["entry1"]).grid(row=1, column=1, padx=10, pady=2)
+        self.example1 = tk.Label(self.frame1, text = "example: Software engineer", font = SMALL_FONT).grid(row=2, column= 1)
+        self.stateEntry = tk.Label(self.frame1, text="State").grid(row=3,  padx=10, pady=2)
+        self.entry2 = tk.Entry(self.frame1,textvariable=self.shared_data["entry2"]).grid(row=3, column=1, padx=10, pady=2)
+        self.example2 = tk.Label(self.frame1, text = "examples: CO, Colorado, colorado", font = SMALL_FONT).grid(row=4, column= 1)
+        self.CityEntry = tk.Label(self.frame1, text="City").grid(row=5,  padx=10, pady=2)
+        self.entry3 = tk.Entry(self.frame1, textvariable=self.shared_data["entry3"]).grid(row=5, column=1, padx=10, pady=2)
+        self.example3 = tk.Label(self.frame1, text = "examples: Denver, denver", font = SMALL_FONT).grid(row=6, column= 1)
+        self.searchButton = tk.Button(self.frame2,  text="Search Indeed.com", command=newSearch).grid(row=7,padx=10, pady=10 )
 
         self.frame0.pack()
         self.frame1.pack()
@@ -109,27 +113,37 @@ class StartPage(tk.Frame):
 
 
 
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class resultsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        title = tk.Label(self, text="Choose a job type").grid(row=0, column=0, padx=10, pady=10)
+        title = tk.Label(self, text="Choose a job type").pack(padx=10, pady=10)
         savedSearch = tk.StringVar(self)
         savedSearch.set("search")  # default saved search
-        savedSearchOption = tk.OptionMenu(self, savedSearch, "software", "engineer")
-        savedSearchOption.grid(row=1, column=0, padx=5, pady=5)
+        savedSearchOption = tk.OptionMenu(self, savedSearch, "Software Engineer", "Nurse")
+        savedSearchOption.pack(padx=5, pady=5)
 
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class analyticsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        title = tk.Label(self, text="Choose a job type").grid(row=0, column=0, padx=10, pady=10)
+        title = tk.Label(self, text="Select attributes for graphing").pack( padx=10, pady=10)
         savedSearch = tk.StringVar(self)
-        savedSearch.set("search")  # default saved search
-        savedSearchOption = tk.OptionMenu(self, savedSearch, "search", "two")
-        savedSearchOption.grid(row=1, column=0, padx=5, pady=5)
+        savedSearch.set("Job title")  # default saved search
+        savedSearchOption = tk.OptionMenu(self, savedSearch, "Software Engineer", "Nurse")
+        savedSearchOption.pack( padx=5, pady=5)
 
+        graphType = tk.StringVar(self)
+        graphType.set("Graph")  # default graph type search
+        graphTypeOption = tk.OptionMenu(self, graphType, "Pie", "Scatter", "Bar")
+        graphTypeOption.pack( padx=5, pady=5)
 
+        category = tk.StringVar(self)
+        category.set("Category")  # default saved search
+        categoryOptions = tk.OptionMenu(self, category, "Category", "Pay grade", "Job experience level", "Job type" )
+        categoryOptions.pack( padx=5, pady=5)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class importPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -139,7 +153,7 @@ class importPage(tk.Frame):
         savedSearchOption.pack(padx=5, pady=5)
         entry3Button = tk.Button(self, text="Import search", command=GUIFunctions.output).pack(padx=5, pady=5)
 
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class exportPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -150,7 +164,7 @@ class exportPage(tk.Frame):
         entry2Button = tk.Button(self, text="Export destination", command=GUIFunctions.output).pack(padx=5, pady=5)
 
 
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 app = mainGUI()
 app.mainloop()
 
