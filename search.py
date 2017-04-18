@@ -128,6 +128,7 @@ job_text         TEXT
         
         hash_string = search_date + search_value + search_title + search_loc + search_sal + search_exp + search_type
         search_hash = hashlib.sha256((hash_string).encode('utf-8')).hexdigest()
+        self.search_hash = search_hash
         
         #Create the val string to input into the DB. The order here is important
         values = (search_hash, search_title, search_date, search_value, search_loc, search_type, search_exp, search_sal)
