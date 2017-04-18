@@ -118,9 +118,9 @@ class StartPage(tk.Frame):
 class resultsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        title = tk.Label(self, text="Select job to view results").pack(padx=10, pady=10)
+        title = tk.Label(self, text="Results").pack(padx=10, pady=10)
         savedSearch = tk.StringVar(self)
-        savedSearch.set("job title")  # default saved search
+        savedSearch.set("job Title")  # default saved search
         savedSearchOption = tk.OptionMenu(self, savedSearch, "Software Engineer", "Nurse")
         savedSearchOption.pack(padx=5, pady=5)
         self.resultsButton = tk.Button(self,  text="View results", font=BUTTON_FONT).pack(padx=20, pady=20 )
@@ -129,7 +129,7 @@ class resultsPage(tk.Frame):
 class analyticsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        title = tk.Label(self, text="Select attributes for graphing").pack( padx=10, pady=10)
+        title = tk.Label(self, text="Analytics\n\nSelect attributes for graphing").pack( padx=10, pady=10)
         savedSearch = tk.StringVar(self)
         savedSearch.set("Job title")  # default saved search
         savedSearchOption = tk.OptionMenu(self, savedSearch, "Software Engineer", "Nurse")
