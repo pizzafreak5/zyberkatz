@@ -23,9 +23,8 @@ WHERE hash_val = (SELECT hash_val FROM junction WHERE search_hash = '{}')
 
         #180 searches per user search! Lets do this.
         job_exp = ['entry_level','mid_level','senior_level']
-        job_salaries = ['$14,000','$20,000','$30,000','$40,000',
-                        '$50,000','$60,000','$70,000','$80,000',
-                        '$90,000','$100,000']
+        job_salaries = ['$14,000','$30,000','$50,000','$70,000',
+                        '$90,000']
         job_types = ['fulltime', 'contract', 'internship', 'temporary',
                     'parttime', 'commission']
 
