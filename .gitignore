@@ -2,3 +2,4 @@ __pycache__/
 .idea/
 /*.db
 /*.db-journal
+/*.json
