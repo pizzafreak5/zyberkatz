@@ -1,5 +1,6 @@
 import search
 import db
+import sqlite3
 
 #run_search will take a job title and location
 #and iterate through other possible search values
@@ -10,6 +11,15 @@ import db
 #The database tables search, listing, and junction
 #have been popluated with new entries
 def run_search(job_title, location, search_title):
+
+        datab = sqlite3.connect(db.information['db_name'])
+        db_cursor = datab.cursor()
+
+        #Listing attribute string
+        q = '''
+UPDATE listing SET job_type = '{}', job_exp = '{}', salary_est = '{}'
+WHERE hash_val = (SELECT hash_val FROM junction WHERE search_hash = '{}')
+'''
 
         #180 searches per user search! Lets do this.
         job_exp = ['entry_level','mid_level','senior_level']
@@ -41,6 +51,10 @@ def run_search(job_title, location, search_title):
                                 search_ob = search.Search(search_options)
                                 search_ob.search()
 
+                                db_cursor.execute(q.format(typ, xp, sal, search_ob.search_hash))
+
+                                datab.commit()
+
         
 
 def get_jobs_with_field(field, value):
@@ -69,8 +83,6 @@ def pie_graph_data(search_title, search_date, attribute, attribute_values):
 SELECT {} FROM search
 WHERE search_title = '{}'
 AND search_date = '{}';'''
-
-        listings = 
 
         
         
