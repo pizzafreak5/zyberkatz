@@ -15,27 +15,29 @@ print (url)                         #show the url
 ###### DATABASE AND SCRAPING#######
 ###################################
 #Preparing the sqlite3 database for scraper.py
-listings = sqlite3.connect(':memory:')          #Create a database in ram
+#listings = sqlite3.connect(':memory:')          #Create a database in ram
                                                 #Change :memory: to a different value to not be in ram
+listings = sqlite3.connect('indeed_database.db')
+
 db_cursor = listings.cursor()                   #Create a cursor that will be passed into scraper.py
 #Create the table that will be used by scraper.py
-db_cursor.execute('''
-CREATE TABLE listings
-(
-hash_val         TEXT PRIMARY KEY NOT NULL,
-company          TEXT,
-time_posted      TEXT,
-job_title        TEXT,
-job_desc         TEXT,
-job_loc          TEXT,
-job_exp          TEXT,
-salary_est       TEXT,
-job_type         TEXT,
-link             TEXT,
-job_text         TEXT
-);
-''')
-listings.commit()
+    # db_cursor.execute('''
+    # CREATE TABLE listings
+    # (
+    # hash_val         TEXT PRIMARY KEY NOT NULL,
+    # company          TEXT,
+    # time_posted      TEXT,
+    # job_title        TEXT,
+    # job_desc         TEXT,
+    # job_loc          TEXT,
+    # job_exp          TEXT,
+    # salary_est       TEXT,
+    # job_type         TEXT,
+    # link             TEXT,
+    # job_text         TEXT
+    # );
+    # ''')
+    # listings.commit()
 
 #dict for settings that is passed to a scraper object                     
 settings = {
@@ -77,8 +79,8 @@ settings = {
                            
 #'''Create a new scraper object and scrape
 #It needs the settings dictionary, the database cursor, and the table name you want to use
-scraper1 = scraper.scraper(settings, db_cursor, "listings") 
-scraper1.scrape(scraper1.url)                   #Start it with the initial url provided
+    # scraper1 = scraper.scraper(settings, db_cursor, "listings")
+    # scraper1.scrape(scraper1.url)                   #Start it with the initial url provided
 #'''
 
 #Save the Entries
@@ -99,14 +101,18 @@ column_names = ['Hash value',
                 ]
 
 #Show the entries in the database
-for row in db_cursor.execute('SELECT * FROM listings'):
+# for row in db_cursor.execute('SELECT * FROM listings'):
+#     print ('ENTRY:\n**********************************************************')
+#     for i in range(len(row)):
+#         print (column_names[i] + ':' + row[i])
+#     print('**********************************************************\n')
+
+
+for row in db_cursor.execute('SELECT * FROM listings WHERE company LIKE "%Lockheed M%"'):
     print ('ENTRY:\n**********************************************************')
     for i in range(len(row)):
         print (column_names[i] + ':' + row[i])
     print('**********************************************************\n')
-
-
-
 
 
 
