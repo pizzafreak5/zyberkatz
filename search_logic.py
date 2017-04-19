@@ -19,9 +19,15 @@ def run_search(job_title, location, search_title):
         db_cursor = datab.cursor()
 
         #Listing attribute string
-        q = '''
-UPDATE listing SET job_type = '{}', job_exp = '{}', salary_est = '{}'
+        oldq = '''
+UPDATE listing SET job_exp = '{}', job_type = '{}', salary_est = '{}'
 WHERE hash_val = (SELECT hash_val FROM junction WHERE search_hash = '{}')
+'''
+
+        q = '''
+UPDATE listing SET job_exp = '{}', job_type = '{}', salary_est = '{}' 
+WHERE hash_val IN (SELECT hash_val FROM junction 
+WHERE search_hash = '{}')
 '''
 
         #180 searches per user search! Lets do this.
@@ -31,9 +37,9 @@ WHERE hash_val = (SELECT hash_val FROM junction WHERE search_hash = '{}')
         job_types = ['fulltime', 'contract', 'internship', 'temporary',
                     'parttime', 'commission']
 
-        for xp in job_exp:
-                for sal in job_salaries:
-                        for typ in job_types:
+        for sal in job_salaries:
+                for typ in job_types:
+                        for xp in job_exp:
                                 search_options = {'search_title':'',
                                                   'search_value':'',
                                                   'job_location':'',
@@ -53,10 +59,9 @@ WHERE hash_val = (SELECT hash_val FROM junction WHERE search_hash = '{}')
                                 search_ob = search.Search(search_options)
                                 search_ob.search()
 
-                                db_cursor.execute(q.format(typ, xp, sal, search_ob.search_hash))
-
+                                db_cursor.execute(q.format(xp, typ, sal, search_ob.search_hash))
                                 datab.commit()
-
+                                
         
 
 def get_jobs_with_field(field, value):
@@ -87,77 +92,77 @@ WHERE search_title = '{}'
 AND search_date = '{}';'''
 ##########################################################
 
-new_job_exp_info = [0,0,0]   # each job exp is a index value
-state = "CO"        # casual variable
+        new_job_exp_info = [0,0,0]   # each job exp is a index value
+        state = "CO"        # casual variable
 
-for row in db_cursor.execute('SELECT job_exp FROM search WHERE job_loc LIKE "%'+state+'%"'):
+        for row in db_cursor.execute('SELECT job_exp FROM search WHERE job_loc LIKE "%'+state+'%"'):
 
-    row_info = []
-    for i in range(len(row)):
-        if (row[i] == 'entry_level'):
-            temp = new_job_exp_info[0]
-            new_job_exp_info[0]= temp+1
-        elif(row[i] == 'mid_level'):
-            temp = new_job_exp_info[1]
-            new_job_exp_info[1] = temp + 1
-        elif(row[i] == 'senior_level'):
-            temp = new_job_exp_info[2]
-            new_job_exp_info[2] = temp + 1
+            row_info = []
+            for i in range(len(row)):
+                if (row[i] == 'entry_level'):
+                    temp = new_job_exp_info[0]
+                    new_job_exp_info[0]= temp+1
+                elif(row[i] == 'mid_level'):
+                    temp = new_job_exp_info[1]
+                    new_job_exp_info[1] = temp + 1
+                elif(row[i] == 'senior_level'):
+                    temp = new_job_exp_info[2]
+                    new_job_exp_info[2] = temp + 1
 
-print (new_job_exp_info)
-#########################################################
+        print (new_job_exp_info)
+        #########################################################
 
-new_job_type_info = [0,0,0,0,0,0]   # each job type is a index value
-state = "CO"                        # casual variable
+        new_job_type_info = [0,0,0,0,0,0]   # each job type is a index value
+        state = "CO"                        # casual variable
 
-for row in db_cursor.execute('SELECT job_type FROM search WHERE job_loc LIKE "%'+state+'%"'):
+        for row in db_cursor.execute('SELECT job_type FROM search WHERE job_loc LIKE "%'+state+'%"'):
 
-    row_info = []
-    for i in range(len(row)):
-        if (row[i] == 'fulltime'):
-            temp = new_job_type_info[0]
-            new_job_exp_info[0]= temp+1
-        elif(row[i] == 'contract'):
-            temp = new_job_type_info[1]
-            new_job_exp_info[1] = temp + 1
-        elif(row[i] == 'internship'):
-            temp = new_job_type_info[2]
-            new_job_exp_info[2] = temp + 1
-        elif (row[i] == 'temporary'):
-            temp = new_job_type_info[3]
-            new_job_exp_info[3]= temp+1
-        elif(row[i] == 'parttime'):
-            temp = new_job_type_info[4]
-            new_job_exp_info[4] = temp + 1
-        elif(row[i] == 'commission'):
-            temp = new_job_type_info[5]
-            new_job_exp_info[5] = temp + 1
+            row_info = []
+            for i in range(len(row)):
+                if (row[i] == 'fulltime'):
+                    temp = new_job_type_info[0]
+                    new_job_exp_info[0]= temp+1
+                elif(row[i] == 'contract'):
+                    temp = new_job_type_info[1]
+                    new_job_exp_info[1] = temp + 1
+                elif(row[i] == 'internship'):
+                    temp = new_job_type_info[2]
+                    new_job_exp_info[2] = temp + 1
+                elif (row[i] == 'temporary'):
+                    temp = new_job_type_info[3]
+                    new_job_exp_info[3]= temp+1
+                elif(row[i] == 'parttime'):
+                    temp = new_job_type_info[4]
+                    new_job_exp_info[4] = temp + 1
+                elif(row[i] == 'commission'):
+                    temp = new_job_type_info[5]
+                    new_job_exp_info[5] = temp + 1
 
 
-print (new_job_type_info)
+        print (new_job_type_info)
 
-#########################################################
-job_exp = ['entry_level', 'mid_level', 'senior_level']
-slices02 = [7,2,13]
-plt.pie(slices02,
-        labels=job_exp,
-        startangle=90,
-        shadow=True,
-        explode=(0,0.1,0),
-        autopct= '%1.1f%%')
-plt.title('job_exp Pie Graph\nCheck it out')
-plt.legend()
-plt.show()
+        #########################################################
+        job_exp = ['entry_level', 'mid_level', 'senior_level']
+        slices02 = [7,2,13]
+        plt.pie(slices02,
+                labels=job_exp,
+                startangle=90,
+                shadow=True,
+                explode=(0,0.1,0),
+                autopct= '%1.1f%%')
+        plt.title('job_exp Pie Graph\nCheck it out')
+        plt.legend()
+        plt.show()
 
-# job_types = ['fulltime', 'contract', 'internship', 'temporary',
-#              'parttime', 'commission']
-# slices01 = [7,2,13,34,40,10]
-# plt.pie(slices01,
-#         labels=job_types,
-#         startangle=90,
-#         shadow=True,
-#         explode=(0,0.1,0,0,0,0),
-#         autopct= '%1.1f%%')
-# plt.title('job_types Pie Graph\nCheck it out')
-# plt.legend()
-# plt.show()
+        # job_types = ['fulltime', 'contract', 'internship', 'temporary',
+        #              'parttime', 'commission']
+        # slices01 = [7,2,13,34,40,10]
+        # plt.pie(slices01,
+        #         labels=job_types,
+        #         startangle=90,
+        #         shadow=True,
+        #         explode=(0,0.1,0,0,0,0),
+        #         autopct= '%1.1f%%')
+        # plt.title('job_types Pie Graph\nCheck it out')
+        # plt.legend()
+        # plt.show()
