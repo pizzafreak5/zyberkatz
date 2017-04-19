@@ -94,7 +94,7 @@ class StartPage(tk.Frame):
             searchTitle = self.shared_data["entry4"].get()
             location = state + ", " + city
 
-            if location.isalpha():
+            if state.isalpha() & city.isalpha():
                 GUIFunctions.newSearch(jobTitle, location, searchTitle)
             else:
                 tk.messagebox.showerror("Error", "There is a number in your entry for State/City")
