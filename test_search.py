@@ -1,6 +1,7 @@
 import search 
 import sqlite3
 import db
+import matplotlib.pyplot as plt
 
 search_options = {'search_title':'something',
                        'search_value':'COMPUTER SCIENC',

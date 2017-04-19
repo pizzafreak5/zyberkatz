@@ -90,6 +90,11 @@ class StartPage(tk.Frame):
             print(self.shared_data["entry1"].get())
             print(self.shared_data["entry2"].get())
             print(self.shared_data["entry3"].get())
+            jobTitle = self.shared_data["entry1"].get()
+            state = self.shared_data["entry2"].get()
+            city = self.shared_data["entry3"].get()
+
+            GUIFunctions.newSearch(jobTitle, state, city)
 
 
         self.frame0 = tk.Frame(self)
@@ -118,34 +123,51 @@ class StartPage(tk.Frame):
 class resultsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        def returnResults():
+            search = self.savedSearch.get()
+            GUIFunctions.returnResults(search)
+
         title = tk.Label(self, text="Results").pack(padx=10, pady=10)
-        savedSearch = tk.StringVar(self)
-        savedSearch.set("job Title")  # default saved search
-        savedSearchOption = tk.OptionMenu(self, savedSearch, "Software Engineer", "Nurse")
-        savedSearchOption.pack(padx=5, pady=5)
-        self.resultsButton = tk.Button(self,  text="View results", font=BUTTON_FONT).pack(padx=20, pady=20 )
+        self.savedSearch = tk.StringVar(self)
+        self.savedSearch.set("job Title")  # default saved search
+        self.savedSearchOption = tk.OptionMenu(self, self.savedSearch, "Software Engineer", "Nurse")
+        self.savedSearchOption.pack(padx=5, pady=5)
+        self.resultsButton = tk.Button(self,  text="View results", command = returnResults,
+                                       font=BUTTON_FONT).pack(padx=20, pady=20 )
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class analyticsPage(tk.Frame):
+
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+
+        def newAnalyticSearch():
+            search = self.savedSearch.get()
+            graph = self.graphType.get()
+            category = self.category.get()
+            GUIFunctions.createPieChart(search,graph,category)
+
         title = tk.Label(self, text="Analytics\n\nSelect attributes for graphing").pack( padx=10, pady=10)
-        savedSearch = tk.StringVar(self)
-        savedSearch.set("Job title")  # default saved search
-        savedSearchOption = tk.OptionMenu(self, savedSearch, "Software Engineer", "Nurse")
-        savedSearchOption.pack( padx=5, pady=5)
+        self.savedSearch = tk.StringVar(self)
+        self. savedSearch.set("Job title")  # default saved search
+        self.savedSearchOption = tk.OptionMenu(self, self.savedSearch, "Software Engineer", "Nurse")
+        self.savedSearchOption.pack( padx=5, pady=5)
 
-        graphType = tk.StringVar(self)
-        graphType.set("Graph")  # default graph type search
-        graphTypeOption = tk.OptionMenu(self, graphType, "Pie", "Scatter", "Bar")
-        graphTypeOption.pack( padx=5, pady=5)
+        self.graphType = tk.StringVar(self)
+        self.graphType.set("Graph")  # default graph type search
+        self.graphTypeOption = tk.OptionMenu(self, self.graphType, "Pie", "Bar")
+        self.graphTypeOption.pack( padx=5, pady=5)
 
-        category = tk.StringVar(self)
-        category.set("Category")  # default saved search
-        categoryOptions = tk.OptionMenu(self, category, "Category", "Pay grade", "Job experience level", "Job type" )
-        categoryOptions.pack( padx=5, pady=5)
+        self.category = tk.StringVar(self)
+        self.category.set("Category")  # default saved search
+        self.categoryOptions = tk.OptionMenu(self, self.category, "Salary", "Job experience level", "Job type" )
+        self.categoryOptions.pack( padx=5, pady=5)
 
-        self.graphButton = tk.Button(self,  text="Create graph", font=BUTTON_FONT).pack(padx=20, pady=20 )
+        self.graphButton = tk.Button(self,  text="Create graph", font=BUTTON_FONT, command = newAnalyticSearch)
+        self.graphButton.pack(padx=20, pady=20)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class importPage(tk.Frame):

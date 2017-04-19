@@ -13,6 +13,7 @@
 
 from tkinter import *
 from tkinter import filedialog
+import tkinter as tk
 import socket
 import threading
 from tkinter import messagebox
@@ -138,3 +139,97 @@ def output(self):
         self.updateStatus("No such file or directory selected...")
         # else:
         #       self.updateStatus("Can't save output while running...")
+def newSearch(jobTitle, state, city):
+    print(jobTitle)
+    print(state)
+    print(city)
+
+def returnResults(search):
+    print(search)
+
+
+def createPieChart(search,graph,category):
+    print(search)
+    print(graph)
+    print(category)
+
+    # Data Collection for Pie Chart for Job Experience Category
+    #
+    # new_job_exp_info = [0, 0, 0]  # each job exp is a index value
+    # state = "CO"  # casual variable
+    #
+    # for row in db_cursor.execute('SELECT job_exp FROM search WHERE job_loc LIKE "%' + state + '%"'):
+    #
+    #     row_info = []
+    #     for i in range(len(row)):
+    #         if (row[i] == 'entry_level'):
+    #             temp = new_job_exp_info[0]
+    #             new_job_exp_info[0] = temp + 1
+    #         elif (row[i] == 'mid_level'):
+    #             temp = new_job_exp_info[1]
+    #             new_job_exp_info[1] = temp + 1
+    #         elif (row[i] == 'senior_level'):
+    #             temp = new_job_exp_info[2]
+    #             new_job_exp_info[2] = temp + 1
+    #
+    # print(new_job_exp_info)
+
+    # Data Collection for Pie Chart for Job Type Category
+    #
+    # new_job_type_info = [0, 0, 0, 0, 0, 0]  # each job type is a index value
+    # state = "CO"  # casual variable
+    #
+    # for row in db_cursor.execute('SELECT job_type FROM search WHERE job_loc LIKE "%' + state + '%"'):
+    #
+    #     row_info = []
+    #     for i in range(len(row)):
+    #         if (row[i] == 'fulltime'):
+    #             temp = new_job_type_info[0]
+    #             new_job_exp_info[0] = temp + 1
+    #         elif (row[i] == 'contract'):
+    #             temp = new_job_type_info[1]
+    #             new_job_exp_info[1] = temp + 1
+    #         elif (row[i] == 'internship'):
+    #             temp = new_job_type_info[2]
+    #             new_job_exp_info[2] = temp + 1
+    #         elif (row[i] == 'temporary'):
+    #             temp = new_job_type_info[3]
+    #             new_job_exp_info[3] = temp + 1
+    #         elif (row[i] == 'parttime'):
+    #             temp = new_job_type_info[4]
+    #             new_job_exp_info[4] = temp + 1
+    #         elif (row[i] == 'commission'):
+    #             temp = new_job_type_info[5]
+    #             new_job_exp_info[5] = temp + 1
+    #
+    # print(new_job_type_info)
+    #########################################################
+
+    # Pie Chart for Job Experience Category
+    #
+    # job_exp = ['entry_level', 'mid_level', 'senior_level']
+    # slices02 = [7, 2, 13]
+    # plt.pie(slices02,
+    #         labels=job_exp,
+    #         startangle=90,
+    #         shadow=True,
+    #         explode=(0, 0.1, 0),
+    #         autopct='%1.1f%%')
+    # plt.title('job_exp Pie Graph\nCheck it out')
+    # plt.legend()
+    # plt.show()
+
+    # Pie Chart for Job Type Category
+    #
+    # job_types = ['fulltime', 'contract', 'internship', 'temporary',
+    #              'parttime', 'commission']
+    # slices01 = [7,2,13,34,40,10]
+    # plt.pie(slices01,
+    #         labels=job_types,
+    #         startangle=90,
+    #         shadow=True,
+    #         explode=(0,0.1,0,0,0,0),
+    #         autopct= '%1.1f%%')
+    # plt.title('job_types Pie Graph\nCheck it out')
+    # plt.legend()
+    # plt.show()
