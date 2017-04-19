@@ -16,6 +16,7 @@ from tkinter import filedialog
 import tkinter as tk
 import socket
 import threading
+import search_logic
 from tkinter import messagebox
 import sys
 import datetime
@@ -139,10 +140,11 @@ def output(self):
         self.updateStatus("No such file or directory selected...")
         # else:
         #       self.updateStatus("Can't save output while running...")
-def newSearch(jobTitle, state, city):
-    print(jobTitle)
-    print(state)
-    print(city)
+
+def newSearch(jobTitle, location, searchTitle):
+    search_logic.run_search(jobTitle, location, searchTitle)
+
+
 
 def returnResults(search):
     print(search)

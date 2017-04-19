@@ -14,10 +14,11 @@ import sys
 from tkinter import filedialog
 import GUIFunctions
 
+
 # Font size for the title
 LARGE_FONT = ("fixedsys", 18)
 SMALL_FONT = ("arial", 7)
-BUTTON_FONT = ("arial", 16)
+BUTTON_FONT = ("arial", 14)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,18 +84,20 @@ class StartPage(tk.Frame):
         self.shared_data = {
             "entry1": tk.StringVar(),
             "entry2": tk.StringVar(),
-            "entry3": tk.StringVar()
+            "entry3": tk.StringVar(),
+            "entry4": tk.StringVar()
         }
-
         def newSearch():
-            print(self.shared_data["entry1"].get())
-            print(self.shared_data["entry2"].get())
-            print(self.shared_data["entry3"].get())
             jobTitle = self.shared_data["entry1"].get()
             state = self.shared_data["entry2"].get()
             city = self.shared_data["entry3"].get()
+            searchTitle = self.shared_data["entry4"].get()
+            location = state + ", " + city
 
-            GUIFunctions.newSearch(jobTitle, state, city)
+            if location.isalpha():
+                GUIFunctions.newSearch(jobTitle, location, searchTitle)
+            else:
+                tk.messagebox.showerror("Error", "There is a number in your entry for State/City")
 
 
         self.frame0 = tk.Frame(self)
@@ -111,7 +114,10 @@ class StartPage(tk.Frame):
         self.CityEntry = tk.Label(self.frame1, text="City").grid(row=5,  padx=10, pady=2)
         self.entry3 = tk.Entry(self.frame1, textvariable=self.shared_data["entry3"]).grid(row=5, column=1, padx=10, pady=2)
         self.example3 = tk.Label(self.frame1, text = "ex: Denver, denver", font = SMALL_FONT).grid(row=6, column= 1)
-        self.searchButton = tk.Button(self.frame2,  text="Search Indeed.com", font= BUTTON_FONT, command=newSearch).grid(row=7,padx=10, pady=10 )
+        self.searchTitleEntry = tk.Label(self.frame1, text="Search Title").grid(row=7,  padx=10, pady=2)
+        self.entry4 = tk.Entry(self.frame1, textvariable=self.shared_data["entry4"]).grid(row=7, column=1, padx=10, pady=2)
+        self.example4 = tk.Label(self.frame1, text = "ex: SoftwareEngineerSept2017", font = SMALL_FONT).grid(row=8, column= 1)
+        self.searchButton = tk.Button(self.frame2,  text="Search Indeed.com", font= BUTTON_FONT, command=newSearch).grid(row=9,padx=10, pady=10 )
 
         self.frame0.pack()
         self.frame1.pack()
@@ -142,7 +148,6 @@ class analyticsPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
 
         def newAnalyticSearch():
             search = self.savedSearch.get()
