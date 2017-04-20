@@ -108,7 +108,18 @@ job_text         TEXT
         #RUN SCRAPER
         #---------------
         search_scraper = scraper.scraper(settings, db_cursor, 'temporary')
-        search_scraper.scrape(search_scraper.url)
+
+        flag = True
+
+        while flag:
+            try:
+                flag = False
+                search_scraper.scrape(search_scraper.url)
+            except:
+                flag = True
+                
+        
+        
 
         #save changes to db
         db.commit()
