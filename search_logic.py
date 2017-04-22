@@ -90,4 +90,3 @@ def pie_graph_data(search_title, search_date, attribute, attribute_values):
 SELECT {} FROM search
 WHERE search_title = '{}'
 AND search_date = '{}';'''
-

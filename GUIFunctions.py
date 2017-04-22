@@ -152,6 +152,7 @@ def newSearch(jobTitle, location, searchTitle):
 
 def returnResults(search):
     print(search)
+    analytics.resultsChart(search)
 
 
 def createPieChart(search,graph,category):
