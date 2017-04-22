@@ -21,25 +21,22 @@ row_info = ['Company',
 class resultChart(tk.Tk):
     def __init__(self, searchJobTitle):
 
-
-
         tk.Tk.__init__(self)
-
         # ---------------
         # DB SETUP
         # ---------------
-        db = sqlite3.connect(global_db_name)  # Connect to the project database
-        db_cursor = db.cursor()
+        # db = sqlite3.connect(global_db_name)  # Connect to the project database
+        # db_cursor = db.cursor()
 
         self.grabJobTitle(searchJobTitle)
 
         # Show the entries in the database
-        column_names_short = [
-            'Company',
-            'Job title',
-            'Location'
-        ]
-        sql_info = []  # each job is a index value
+        # column_names_short = [
+        #     'Company',
+        #     'Job title',
+        #     'Location'
+        # ]
+        # sql_info = []  # each job is a index value
 
         # row_info = ['Company',
         #             'Job title',
@@ -102,7 +99,7 @@ class resultChart(tk.Tk):
                 '''.format(search_list)
         rowNumber = 1
         for row in db_cursor.execute(query):
-            print('ENTRY:\n**********************************************************')
+            # print('ENTRY:\n**********************************************************')
 
             # ('SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE
             # hash_val IN (SELECT hash_val FROM junction WHERE search_hash IN (SELECT
@@ -110,9 +107,9 @@ class resultChart(tk.Tk):
 
             for i in range(len(row)):
                 row_info.append(row[i])
-                print(row_info)
+                # print(row_info)
 
-            print('**********************************************************\n')
+            # print('**********************************************************\n')
             rowNumber += 1
 
         print(rowNumber, " entries found")
@@ -132,7 +129,7 @@ class SimpleTable(tk.Frame):
 
     def __init__(self, parent, rows=rowNumber, columns=5):
 
-        self.canvas = tk.Canvas(parent, borderwidth=5, background="grey", height = 350, width = 1278)
+        self.canvas = tk.Canvas(parent, borderwidth=5, background="grey", height = 350, width = 1080)
         tk.Frame.__init__(self, self.canvas)
 
 
