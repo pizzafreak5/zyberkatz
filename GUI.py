@@ -117,6 +117,7 @@ class GUI(tk.Frame):
         self.search_selected_button = tk.Button(root, text="Create a new Search from the above", command=self.search_selection).grid(row=selection_row+2, column=selection_column, columnspan=2)        
 
         #Text for analytics
+        self.analytics_button = tk.Button(root, text="Analytics", command=self.analytics).grid(row=selection_row+3, column=selection_column, columnspan=2)
         
     def update_search_selection(self, event):
         widget = event.widget                   #Get the widget for the event
@@ -132,6 +133,9 @@ class GUI(tk.Frame):
         
     def export_info(self):
         print("export")
+        
+    def analytics(self):
+        print("analytics")
         
     def new_search(self):
         global searches
@@ -271,9 +275,7 @@ class GUI(tk.Frame):
                     field_string += "lower({}) LIKE '%{}%' or ".format(selected_fields[i], search_term)
                 else:
                     field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
-            
-        print(field_string)
-            
+                        
         #Query
         query = '''
         SELECT *
@@ -295,8 +297,6 @@ class GUI(tk.Frame):
             query += "AND (" + field_string + ")"
         
         query += ";"
-            
-        print (query)
         
         results = ""
         stop_writing = False
@@ -316,7 +316,69 @@ class GUI(tk.Frame):
     
     def search_save(self):
         #Identical to search_text
-        print("save")
+        #There is no searches selected
+        if not self.selected:
+            self.output_to_search_text("No search has been selected to be used", clear = True)
+            return
+            
+        #Grab the search text value
+        search_term = self.input_text_search.get()
+        search_term = search_term.lower()
+        
+        if search_term != ""and not self.field_selected:
+            self.output_to_search_text("No field to search for " + search_term)
+            return
+        
+        
+        #Create the database connection
+        db = sqlite3.connect(db_name)
+        db_cursor = db.cursor()
+        
+        #Prep to find the searches
+        search_list = "'"
+        #For singular it is done inside the query string itself
+        search_list += "' or search_title = '".join(self.selected) 
+        search_list += "'"
+        
+        #Prep to search the appropriate fields
+        fields = ("company", "time_posted", "job_title", "job_desc", "job_loc", 
+                      "job_exp", "salary_est", "job_type", "link", "job_text")
+        
+        selected_fields = []            #have to reconstruct with database names
+        for i in self.field_selection:  #From user seen names
+            selected_fields.append(fields[i])
+        
+        field_string = ""
+        for i in range(len(selected_fields)):
+            if len(selected_fields) == 1:
+                field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
+            else:
+                if (len(selected_fields)-1 != i):
+                    field_string += "lower({}) LIKE '%{}%' or ".format(selected_fields[i], search_term)
+                else:
+                    field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
+                        
+        #Query
+        query = '''
+        SELECT *
+        from listing
+        where hash_val
+        in
+        (
+        select hash_val
+        from junction
+        where search_hash
+        in
+        (
+        select search_hash
+        from search
+        where search_title = {}))
+        '''.format(search_list)
+        
+        if search_term != "":
+            query += "AND (" + field_string + ")"
+        
+        query += ";"
         #SQL to save
         
     def output_to_search_text(self, message, clear = False):
