@@ -4,6 +4,36 @@ import json
 import search_logic
 import sqlite3
 
+
+aboutTxt = """
+Katz Attack Triple Threat Z'craper: (KATTZ)
+Licensed 2017, March 25th.
+
+Release version # 1.0.4
+
+This web scrapper was designed to scrape and search Indeed.com
+for a specified job and/or location, then storing the information
+in a SQL database. It will be possible to look up analytics for the job
+searches as well as comparative analytics on many of the job searches. 
+
+Powered by open-source software
+"""
+
+disclaimer = """
+Disclaimer
+
+This tool was manufactured for an university class project. Much testing
+has been performed, however unforeseen scenarios may impose undesirable
+output and/or operation. There is no warranty to the output and/or operation
+provided by this tool. This tool should be considered as a learning tool
+and not be applied for professional applications.
+
+Thank you,
+Justin Hockenberry, Gediminas Jakstonis,
+Garrett Schwartz, & Tegan Straley\n"""
+
+
+
 root = tk.Tk()
 
 #Variables
@@ -54,20 +84,25 @@ class GUI(tk.Frame):
         self.create_search_selection(self.results)
         
     def menubar(self):
-        menubar = tk.Menu(root)
-        
-        #Menu
-        menu = tk.Menu(menubar, tearoff=0)
-        menu.add_command(label="Import", command=self.import_info)
-        menu.add_command(label="Export", command=self.export_info)
 
+        menubar = tk.Menu(root)
+
+        # Menu
+        menu = tk.Menu(menubar, tearoff=0)
+        #menu.add_command(label="Import", command=self.import_info)
+        menu.add_command(label="Export", command=self.export_info)
+        menu.add_command(label="Exit", command=self.quit)
         menubar.add_cascade(label="Menu", menu=menu)
-        
+
         #Edit
-        edit_menu = tk.Menu(menubar, tearoff=0)
+        #edit_menu = tk.Menu(menubar, tearoff=0)
         
         #Zyber Katz
-        
+        zmenu = tk.Menu(menubar, tearoff=0)
+        #zmenu.add_command(label="About", command=about)
+        menubar.add_cascade(label="Zyber Katz", menu=zmenu)
+		
+		
         root.config(menu=menubar)
     
     def create_search(self, root):
@@ -388,7 +423,9 @@ class GUI(tk.Frame):
         self.search_text_output.insert(tk.END, message)
         self.search_text_output.config(state=tk.DISABLED)
         
-        
-    
+
+
+
+	 
 app = GUI()
 app.mainloop()
