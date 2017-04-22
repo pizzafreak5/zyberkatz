@@ -265,12 +265,12 @@ class GUI(tk.Frame):
         field_string = ""
         for i in range(len(selected_fields)):
             if len(selected_fields) == 1:
-                field_string += "lower({}) LIKE '{}'".format(selected_fields[i], search_term)
+                field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
             else:
                 if (len(selected_fields)-1 != i):
-                    field_string += "lower({}) LIKE '{}' or ".format(selected_fields[i], search_term)
+                    field_string += "lower({}) LIKE '%{}%' or ".format(selected_fields[i], search_term)
                 else:
-                    field_string += "lower({}) LIKE '{}'".format(selected_fields[i], search_term)
+                    field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
             
         print(field_string)
             
@@ -312,7 +312,7 @@ class GUI(tk.Frame):
                 results += '\n\n'
         
         results = "Total results:" + str(result_count) + "\n\n" + results
-        self.output_to_search_text(results, True)
+        self.output_to_search_text(str.encode(results), True)
     
     def search_save(self):
         #Identical to search_text
