@@ -18,8 +18,11 @@ row_info = ['Company',
             'Salary',
             'Web Links']
 
-class analytic_charts(tk.Tk):
-    def __init__(self):
+class resultChart(tk.Tk):
+    def __init__(self, searchJobTitle):
+
+
+
         tk.Tk.__init__(self)
 
         # ---------------
@@ -43,7 +46,8 @@ class analytic_charts(tk.Tk):
         #             'Web Links']
         rowNumber = 1
         for row in db_cursor.execute(
-                'SELECT company, job_title, job_loc, salary_est, link FROM listing'):  # WHERE job_loc LIKE "%'+state+'%"'):
+                #'SELECT company, job_title, job_loc, salary_est, link FROM listing'):  # WHERE job_loc LIKE "%'+state+'%"'):
+                'SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE job_title LIKE "%'+searchJobTitle+'%"'):
             print('ENTRY:\n**********************************************************')
 
             # ('SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE
@@ -59,7 +63,8 @@ class analytic_charts(tk.Tk):
 
         print(rowNumber, " entries found")
 
-
+        print("i'm finally here")
+        print(searchJobTitle)
 
         t = SimpleTable(self, rowNumber, 5)
 
@@ -158,7 +163,8 @@ class SimpleTable(tk.Frame):
 
 
 if __name__ == "__main__":
-    app = analytic_charts()
+    searchJobTitle =""
+    app = resultChart(searchJobTitle)
     app.mainloop()
 
 
