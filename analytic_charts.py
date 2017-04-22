@@ -31,6 +31,8 @@ class resultChart(tk.Tk):
         db = sqlite3.connect(global_db_name)  # Connect to the project database
         db_cursor = db.cursor()
 
+        self.grabJobTitle(searchJobTitle)
+
         # Show the entries in the database
         column_names_short = [
             'Company',
@@ -44,10 +46,62 @@ class resultChart(tk.Tk):
         #             'Location',
         #             'Salary',
         #             'Web Links']
+        # rowNumber = 1
+        # for row in db_cursor.execute(
+        #         #'SELECT company, job_title, job_loc, salary_est, link FROM listing'):  # WHERE job_loc LIKE "%'+state+'%"'):
+        #         'SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE job_title LIKE "%'+searchJobTitle+'%"'):
+        #     print('ENTRY:\n**********************************************************')
+        #
+        #     # ('SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE
+        #     # hash_val IN (SELECT hash_val FROM junction WHERE search_hash IN (SELECT
+        #     # search_hash FROM search WHERE search_title = 'mysearchinthemiddleofthesearch'))
+        #
+        #     for i in range(len(row)):
+        #         row_info.append(row[i])
+        #         print(row_info)
+        #
+        #     print('**********************************************************\n')
+        #     rowNumber += 1
+        #
+        # print(rowNumber, " entries found")
+
+
+        #t = SimpleTable(self, rowNumber, 5)
+
+        #t.pack(side="top", fill="x")
+
+
+    def grabJobTitle(self, searchJobTitle):
+        # ---------------
+        # DB SETUP
+        # ---------------
+        db = sqlite3.connect(global_db_name)  # Connect to the project database
+        db_cursor = db.cursor()
+
+        # Prep to find the searches
+        search_list = "'"
+        # For singular it is done inside the query string itself
+        search_list += "' or search_title = '".join(searchJobTitle)
+        search_list += "'"
+
+        # Query
+        query = '''
+                SELECT company, job_title, job_loc, salary_est, link
+                from listing
+                where hash_val
+                in
+                (
+                select hash_val
+                from junction
+                where search_hash
+                in
+                (
+                select search_hash
+                from search
+                where search_title = {}));
+                '''.format(search_list)
         rowNumber = 1
-        for row in db_cursor.execute(
-                #'SELECT company, job_title, job_loc, salary_est, link FROM listing'):  # WHERE job_loc LIKE "%'+state+'%"'):
-                'SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE job_title LIKE "%'+searchJobTitle+'%"'):
+        for row in db_cursor.execute(query):
             print('ENTRY:\n**********************************************************')
 
             # ('SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE
@@ -63,15 +117,9 @@ class resultChart(tk.Tk):
 
         print(rowNumber, " entries found")
 
-        print("i'm finally here")
-        print(searchJobTitle)
-
         t = SimpleTable(self, rowNumber, 5)
 
-        #t.pack(side="top", fill="x")
-
-
-
+        # t.pack(side="top", fill="x")
 
 class SimpleTable(tk.Frame):
 

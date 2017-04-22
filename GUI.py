@@ -3,6 +3,7 @@ from tkinter import ttk
 import json
 import search_logic
 import sqlite3
+import analytic_charts
 
 root = tk.Tk()
 
@@ -136,6 +137,9 @@ class GUI(tk.Frame):
         
     def analytics(self):
         print("analytics")
+        searchJobTitle = self.selected
+        analytic_charts.resultChart(searchJobTitle)
+
         
     def new_search(self):
         global searches
