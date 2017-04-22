@@ -1,15 +1,8 @@
-import scraper
+
 import sqlite3
-import json
-import scraper
-import search
-import db
-import sqlite3
-from collections import OrderedDict
 import tkinter as tk
-from tkinter import Tk, Label, Button, Scrollbar, RIGHT, Y, N, W
+from tkinter import N, W, RAISED
 import webbrowser
-import pandas as pd
 import matplotlib
 
 matplotlib.use("TkAgg")  # Needed so that tkinter doesn't crash
@@ -86,7 +79,7 @@ class SimpleTable(tk.Frame):
 
     def __init__(self, parent, rows=rowNumber, columns=5):
 
-        self.canvas = tk.Canvas(parent, borderwidth=10, background="grey", height = 15, width = 1066)
+        self.canvas = tk.Canvas(parent, borderwidth=5, background="grey", height = 350, width = 1278)
         tk.Frame.__init__(self, self.canvas)
 
 
@@ -119,12 +112,12 @@ class SimpleTable(tk.Frame):
                 if (column == 4 and row != 0):
                      link = row_info[cellCount]
 
-                     label = tk.Label(self, text="Job Posting", fg="blue", cursor="hand2")#,
+                     label = tk.Label(self, text="Job Posting", fg="blue", cursor="hand2", relief=RAISED)#,
                                                     #borderwidth = 0)#, width = 10)
                      label.bind("<Button-1>", lambda event, arg=link: self.callback(event, arg))
 
                 else:
-                    label = tk.Label(self, text="%s" % (row_info[cellCount]))#,
+                    label = tk.Label(self, text="%s" % (row_info[cellCount]), relief=RAISED)#,
                                      #borderwidth=0)#, width=20)
                 if (row == 0):
                     label.configure(background='grey')
@@ -139,10 +132,13 @@ class SimpleTable(tk.Frame):
 
         self.vsb = tk.Scrollbar(parent, orient="vertical", command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vsb.set)
-        # self.vsb01 = tk.Scrollbar(parent, orient="horizontal", command=self.canvas.xview)
-        # self.canvas.configure(xscrollcommand=self.vsb01.set)
+
+        self.vsb01 = tk.Scrollbar(parent, orient="horizontal", command=self.canvas.xview)
+        self.canvas.configure(xscrollcommand=self.vsb01.set)
 
         self.vsb.pack(side="right", fill="y")
+        self.vsb01.pack(side="bottom", fill="x")
+
         self.canvas.pack(side="left", fill="both", expand=True)
         self.canvas.create_window((0,0), window=self, anchor=N+W)
         self.bind("<Configure>", self.OnFrameConfigure)
