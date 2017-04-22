@@ -20,7 +20,7 @@ import search_logic
 import matplotlib
 matplotlib.use("TkAgg") # neede so that tkinter doesn't crash
 from matplotlib import pyplot as plt
-
+import analytics
 from tkinter import messagebox
 import sys
 import datetime
@@ -214,17 +214,17 @@ def createPieChart(search,graph,category):
 
     # Pie Chart for Job Experience Category
     #
-    job_exp = ['entry_level', 'mid_level', 'senior_level']
-    slices02 = [7, 2, 13]
-    plt.pie(slices02,
-            labels=job_exp,
-            startangle=90,
-            shadow=True,
-            explode=(0, 0.1, 0),
-            autopct='%1.1f%%')
-    plt.title('job_exp Pie Graph\nCheck it out')
-    plt.legend()
-    plt.show()
+    # job_exp = ['entry_level', 'mid_level', 'senior_level']
+    # slices02 = [7, 2, 13]
+    # plt.pie(slices02,
+    #         labels=job_exp,
+    #         startangle=90,
+    #         shadow=True,
+    #         explode=(0, 0.1, 0),
+    #         autopct='%1.1f%%')
+    # plt.title('job_exp Pie Graph\nCheck it out')
+    # plt.legend()
+    # plt.show()
 
     # Pie Chart for Job Type Category
     #

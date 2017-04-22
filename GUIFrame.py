@@ -135,6 +135,8 @@ class resultsPage(tk.Frame):
             GUIFunctions.returnResults(search)
 
 
+
+
         title = tk.Label(self, text="Results").pack(padx=10, pady=10)
         self.savedSearch = tk.StringVar(self)
         self.savedSearch.set("job Title")  # default saved search
