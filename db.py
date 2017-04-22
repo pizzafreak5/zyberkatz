@@ -28,7 +28,6 @@ link             TEXT,
 job_text         TEXT
 );
 '''
-
 create_search_table = '''
 CREATE TABLE if not exists search
 (
@@ -52,6 +51,21 @@ FOREIGN KEY(hash_val) REFERENCES listing(hash_val),
 FOREIGN KEY(search_hash) REFERENCES search(search_hash)
 );
 '''
+
+create_der_search_table = '''
+CREATE TABLE if not exists der_search
+(
+
+);
+'''
+
+create_junction2_table = '''
+CREATE TABLE if not exists 
+(
+
+);
+'''
+
 
 
 #If there is different values open them, otherwise default and then write to file the default

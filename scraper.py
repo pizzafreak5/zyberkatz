@@ -113,7 +113,9 @@ class scraper:
     def convert_time_posted(self, time):
         digit = time.split(' ')       
         today = datetime.now()
-        digit[0] = digit[0].replace("+", "")
+        if "+" not in digit[0]:
+            today = "old"
+            return today
         #subtract it as days
         if 'day' in time:
             today = today - timedelta(days=int(digit[0]))
@@ -131,25 +133,25 @@ class scraper:
             for listing in listings:
                 company_name = listing.find(self.company_name_tag, self.company_name_attrs)
                 if company_name != None:
-                    company_name = (company_name.text).strip()
+                    company_name = ((company_name.text).strip()).lower()
                 else:
                     company_name = ""
                 
                 job_title = listing.find(self.job_title_tag)           
                 if job_title != None:
-                    job_title = job_title.text
+                    job_title = (job_title.text).lower()
                 else:
                     job_title = ""
                 
                 location = listing.find(self.job_loc_tag, self.job_loc_attrs)
                 if location != None:
-                    location = location.text
+                    location = (location.text).lower()
                 else:
                     location = ""
                 
                 job_desc = listing.find(self.job_desc_tag, self.job_desc_attrs)
                 if job_desc != None:
-                    job_desc = job_desc.text
+                    job_desc = (job_desc.text).lower()
                 else:
                     job_desc = ""
                 
@@ -176,7 +178,7 @@ class scraper:
                 job_listing = BeautifulSoup(get.text, "lxml")
                 [terms.extract() for terms in job_listing(['style', 'script', '[document]', 'head', 'title'])]
                 job_listing_str = job_listing.getText()
-                job_listing_str = re.sub('\s+', ' ', job_listing_str).strip()
+                job_listing_str = (re.sub('\s+', ' ', job_listing_str).strip()).lower()
                                 
                 #used for key
                 hash_val = hashlib.sha256((job_title+job_desc).encode('utf-8')).hexdigest()
