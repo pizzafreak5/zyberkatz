@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, StringVar, Label, BOTTOM, SUNKEN, W, X,S,E
 import json
 import search_logic
 import sqlite3
@@ -49,7 +49,7 @@ class GUI(tk.Frame):
         root.resizable(0,0)
         root.iconbitmap('sideprofileCat.ico')
         root.wm_title("KATTZraper")
-        
+
         self.selected = []
         self.field_selected = []
         
@@ -75,6 +75,15 @@ class GUI(tk.Frame):
         
         #Create the elements for results
         self.create_search_selection(self.results)
+
+
+        # ****** Bottom Status Bar *******
+        self.message = ""  # Awaiting your command!
+        self.statusText = StringVar()
+        self.statusText.set(self.message)
+        self.status = Label(root, textvariable=self.statusText, bd=1,
+                            background='grey').grid(row=4, column=0, columnspan=2, sticky=W + E)
+
         
     def menubar(self):
 
@@ -122,7 +131,12 @@ class GUI(tk.Frame):
         
         #Error output
         #self.error_search_output = tk.Label(root, text=self.error_search).grid(row=4, column=0)
-    
+
+
+
+    def updateStatus(self, textVar):
+        self.statusText.set(textVar)
+
     def create_search_selection(self, root):
         #globals used        
         self.search_list = tk.Listbox(root, selectmode=tk.EXTENDED, 
@@ -188,19 +202,24 @@ class GUI(tk.Frame):
         label2.pack()
         
     def new_search(self):
+
+
+
         #Get input
         job_title = self.job_title.get()
         location = self.location.get()
         search_title = self.search_name.get()
-        
+
         if search_title == "":
             error = "Error: a search has to have a non-empty name"
+            self.updateStatus("Error: a search has to have a non-empty name")
             self.error_search = error
             return
         
         #Verify uniqueness of search title
         if search_title in self.searches:
             error = "Error: there already exists a search with the name" + search_title
+            self.updateStatus("Error: there already exists a search with the name" + search_title)
             self.error_search = error
             return
         
@@ -209,11 +228,13 @@ class GUI(tk.Frame):
         
         #Do a search
         search_logic.run_search(job_title, location, search_title)
-            
+
         #Update the results so that the search is visible
         self.search_list.insert(tk.END, search_title)
         self.update_settings()
         self.update_idletasks()
+
+        self.updateStatus("Completed scanning Indeed.com...")
     
     def load_settings(self):
         self.searches = []
