@@ -38,7 +38,6 @@ Garrett Schwartz, & Tegan Straley\n"""
 root = tk.Tk()
 
 #Variables
-searches = []                           #List of searches
 db_name = 'zyber.db'
 
 
@@ -125,13 +124,11 @@ class GUI(tk.Frame):
         #self.error_search_output = tk.Label(root, text=self.error_search).grid(row=4, column=0)
     
     def create_search_selection(self, root):
-        #globals used
-        global searches
-        
+        #globals used        
         self.search_list = tk.Listbox(root, selectmode=tk.EXTENDED, 
                                 height=5,width=32, exportselection=False)
                 
-        for search in searches:
+        for search in self.searches:
             self.search_list.insert(tk.END, search)
         
         #Text
@@ -187,7 +184,6 @@ class GUI(tk.Frame):
         label2.pack()
         
     def new_search(self):
-        global searches
         #Get input
         job_title = self.job_title.get()
         location = self.location.get()
@@ -199,13 +195,13 @@ class GUI(tk.Frame):
             return
         
         #Verify uniqueness of search title
-        if search_title in searches:
+        if search_title in self.searches:
             error = "Error: there already exists a search with the name" + search_title
             self.error_search = error
             return
         
         #Add it to searches
-        searches.append(search_title)
+        self.searches.append(search_title)
         
         #Do a search
         search_logic.run_search(job_title, location, search_title)
@@ -216,18 +212,17 @@ class GUI(tk.Frame):
         self.update_idletasks()
     
     def load_settings(self):
-        global searches
+        self.searches = []
         try:
             with open('kattz.settings.json') as settings:
-                searches = json.load(settings)
+                self.searches = json.load(settings)
         except:
             print ("Failed to find file kattz.settings.json")
             
     def update_settings(self):
-        global searches
         with open('kattz.settings.json', 'w') as settings:
             settings.seek(0)
-            write_string = json.dumps(searches)
+            write_string = json.dumps(self.searches)
             settings.write(write_string)
             settings.truncate()
             settings.close()
@@ -270,9 +265,9 @@ class GUI(tk.Frame):
         
         #Output
         self.search_text_output = tk.Text(text_search, height=20, width=80)
-        self.search_text_output.config(state=tk.NORMAL)
+        self.search_text_output.config(state=tk.NORMAL)                 #Allow writing
         self.search_text_output.delete('1.0', tk.END)                   #clear the output
-        self.search_text_output.config(state=tk.DISABLED)
+        self.search_text_output.config(state=tk.DISABLED)               #No writing
         self.search_text_output.grid(row=3, column=0, columnspan=5)
         
     def update_field_selection(self, event):
@@ -296,7 +291,6 @@ class GUI(tk.Frame):
         if search_term != ""and not self.field_selected:
             self.output_to_search_text("No field to search for " + search_term)
             return
-        
         
         #Create the database connection
         db = sqlite3.connect(db_name)
@@ -427,11 +421,11 @@ class GUI(tk.Frame):
         
 
     def output_to_search_text(self, message, clear = False):
-        self.search_text_output.config(state=tk.NORMAL)
-        if (clear == True):
-            self.search_text_output.delete('1.0', tk.END)
-        self.search_text_output.insert(tk.END, message)
-        self.search_text_output.config(state=tk.DISABLED)
+        self.search_text_output.config(state=tk.NORMAL)     #Allow text writing to box
+        if (clear == True):                                 #Clear box?
+            self.search_text_output.delete('1.0', tk.END)   #Clear box
+        self.search_text_output.insert(tk.END, message)     #Write from bottom down
+        self.search_text_output.config(state=tk.DISABLED)   #Prevent more writing
         
 
 
