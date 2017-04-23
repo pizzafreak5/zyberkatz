@@ -40,18 +40,9 @@ root = tk.Tk()
 #Variables
 searches = []                           #List of searches
 db_name = 'zyber.db'
-scalar_n = 2
 
-#Variables for search
-search_starting_row = 0
-search_starting_column = 0
+
 search_button_font = ("arial", 12)
-
-#Variables for selection
-selection_height = 5
-selection_width = 30
-selection_row = 4
-selection_column = 4
 
 class GUI(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -105,57 +96,58 @@ class GUI(tk.Frame):
         zmenu.add_command(label="About", command=self.about)
         menubar.add_cascade(label="Zyber Katz", menu=zmenu)
 		
-		
         root.config(menu=menubar)
     
     def create_search(self, root):
-        global search_starting_row, search_starting_column, search_button_font
+        global search_button_font
         #job title
-        tk.Label(root, text="Job Title").grid(row=search_starting_row, column = search_starting_column)
+        tk.Label(root, text="Job Title").grid(row=0, column=0)
         #Input
         self.job_title = tk.Entry(root)
-        self.job_title.grid(row=search_starting_row, column = search_starting_column + 1)
+        self.job_title.grid(row=0, column=1)
         
         #Location
-        tk.Label(root, text="Location").grid(row=search_starting_row+1, column = search_starting_column)
+        tk.Label(root, text="Location").grid(row=1, column=0)
         #Input
         self.location = tk.Entry(root)
-        self.location.grid(row=search_starting_row+1, column = search_starting_column+1)
+        self.location.grid(row=1, column =1)
         
         #Search title
-        tk.Label(root, text="Search Name").grid(row=search_starting_row+2, column = search_starting_column)
+        tk.Label(root, text="Search Name").grid(row=2, column=0)
         #Input
         self.search_name = tk.Entry(root)
-        self.search_name.grid(row=search_starting_row+2, column = search_starting_column+1)
+        self.search_name.grid(row=2, column =1)
         
         #search button
-        self.search_button = tk.Button(root, text="Search Indeed.com", font= search_button_font, command=self.new_search).grid(row=search_starting_row+3, column=search_starting_column, columnspan=2)        
+        self.search_button = tk.Button(root, text="Search Indeed.com", font= search_button_font, command=self.new_search).grid(row=3, column=0, columnspan=2)        
         
         #Error output
-        self.error_search_output = tk.Label(root, text=self.error_search).grid(row = search_starting_row+4, column = search_starting_column)
+        #self.error_search_output = tk.Label(root, text=self.error_search).grid(row=4, column=0)
     
     def create_search_selection(self, root):
         #globals used
-        global searches, selection_height, selection_width, selection_row, selection_column
+        global searches
         
         self.search_list = tk.Listbox(root, selectmode=tk.EXTENDED, 
-                                height = selection_height, width = selection_width, exportselection=False)
+                                height=5,width=32, exportselection=False)
                 
         for search in searches:
             self.search_list.insert(tk.END, search)
         
         #Text
-        tk.Label(root, text="Select a search or multiple searches").grid(row = selection_row, column = selection_column)
+        tk.Label(root, text="Select a search or multiple searches").grid(row =4, column=4)
         
         #Selection    
-        self.search_list.grid(row = selection_row +1, column = selection_column)
+        self.search_list.grid(row =5, column = 4)
         self.search_list.bind("<<ListboxSelect>>", self.update_search_selection)
         
         #Search The Searches
-        self.search_selected_button = tk.Button(root, text="Create a new Search from the above", command=self.search_selection).grid(row=selection_row+2, column=selection_column, columnspan=2)        
+        self.search_selected_button = tk.Button(root, text="Create a new Search from the above",
+                            command=self.search_selection).grid(row=6, column=4, columnspan=2)        
 
         #Text for analytics
-        self.analytics_button = tk.Button(root, text="Analytics", command=self.analytics).grid(row=selection_row+3, column=selection_column, columnspan=2)
+        self.analytics_button = tk.Button(root, text="Analytics", 
+                            command=self.analytics).grid(row=7, column=4, columnspan=2)
         
     def update_search_selection(self, event):
         widget = event.widget                   #Get the widget for the event
