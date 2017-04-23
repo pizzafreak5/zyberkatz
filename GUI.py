@@ -5,28 +5,50 @@ import search_logic
 import sqlite3
 import analytic_charts
 
+
+aboutTxt = """
+Katz Attack Triple Threat Z'craper: (KATTZ)
+Licensed 2017, March 25th.
+
+Release version # 1.0.4
+
+This web scrapper was designed to scrape and search Indeed.com
+for a specified job and/or location, then storing the information
+in a SQL database. It will be possible to look up analytics for the job
+searches as well as comparative analytics on many of the job searches. 
+
+Powered by open-source software
+"""
+
+disclaimer = """
+Disclaimer
+
+This tool was manufactured for an university class project. Much testing
+has been performed, however unforeseen scenarios may impose undesirable
+output and/or operation. There is no warranty to the output and/or operation
+provided by this tool. This tool should be considered as a learning tool
+and not be applied for professional applications.
+
+Thank you,
+Justin Hockenberry, Gediminas Jakstonis,
+Garrett Schwartz, & Tegan Straley\n"""
+
+
+
 root = tk.Tk()
 
 #Variables
-searches = []                           #List of searches
 db_name = 'zyber.db'
-scalar_n = 2
 
-#Variables for search
-search_starting_row = 0
-search_starting_column = 0
+
 search_button_font = ("arial", 12)
-
-#Variables for selection
-selection_height = 5
-selection_width = 30
-selection_row = 4
-selection_column = 4
 
 class GUI(tk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(root)
         root.resizable(0,0)
+        root.iconbitmap('sideprofileCat.ico')
+        root.wm_title("KATTZraper")
         
         self.selected = []
         self.field_selected = []
@@ -35,7 +57,7 @@ class GUI(tk.Frame):
         self.load_settings()
         
         #Setup the GUI
-        self.error_search = ''
+        self.error_search = ''      #Error string for Search Tab
         
         self.menubar()
 
@@ -55,70 +77,78 @@ class GUI(tk.Frame):
         self.create_search_selection(self.results)
         
     def menubar(self):
-        menubar = tk.Menu(root)
-        
-        #Menu
-        menu = tk.Menu(menubar, tearoff=0)
-        menu.add_command(label="Import", command=self.import_info)
-        menu.add_command(label="Export", command=self.export_info)
 
+        menubar = tk.Menu(root)
+
+        # Menu
+        menu = tk.Menu(menubar, tearoff=0)
+        #menu.add_command(label="Import", command=self.import_info)
+        menu.add_command(label="Export", command=self.export_info)
+        menu.add_command(label="Exit", command=self.quit)
         menubar.add_cascade(label="Menu", menu=menu)
-        
+
         #Edit
-        edit_menu = tk.Menu(menubar, tearoff=0)
+        #edit_menu = tk.Menu(menubar, tearoff=0)
         
         #Zyber Katz
-        
+        zmenu = tk.Menu(menubar, tearoff=0)
+        zmenu.add_command(label="About", command=self.about)
+        menubar.add_cascade(label="Zyber Katz", menu=zmenu)
+		
         root.config(menu=menubar)
     
     def create_search(self, root):
-        global search_starting_row, search_starting_column, search_button_font
+        global search_button_font
         #job title
-        tk.Label(root, text="Job Title").grid(row=search_starting_row, column = search_starting_column)
+        tk.Label(root, text="Job Title").grid(row=0, column=0)
         #Input
         self.job_title = tk.Entry(root)
-        self.job_title.grid(row=search_starting_row, column = search_starting_column + 1)
+        self.job_title.grid(row=0, column=1)
         
         #Location
-        tk.Label(root, text="Location").grid(row=search_starting_row+1, column = search_starting_column)
+        tk.Label(root, text="Location").grid(row=1, column=0)
         #Input
         self.location = tk.Entry(root)
-        self.location.grid(row=search_starting_row+1, column = search_starting_column+1)
+        self.location.grid(row=1, column =1)
         
         #Search title
-        tk.Label(root, text="Search Name").grid(row=search_starting_row+2, column = search_starting_column)
+        tk.Label(root, text="Search Name").grid(row=2, column=0)
         #Input
         self.search_name = tk.Entry(root)
-        self.search_name.grid(row=search_starting_row+2, column = search_starting_column+1)
+        self.search_name.grid(row=2, column =1)
         
         #search button
-        self.search_button = tk.Button(root, text="Search Indeed.com", font= search_button_font, command=self.new_search).grid(row=search_starting_row+3, column=search_starting_column, columnspan=2)        
+        self.search_button = tk.Button(root, text="Search Indeed.com", font= search_button_font, command=self.new_search).grid(row=3, column=0, columnspan=2)        
         
         #Error output
-        self.error_search_output = tk.Label(root, text=self.error_search).grid(row = search_starting_row+4, column = search_starting_column)
+        #self.error_search_output = tk.Label(root, text=self.error_search).grid(row=4, column=0)
     
     def create_search_selection(self, root):
-        #globals used
-        global searches, selection_height, selection_width, selection_row, selection_column
-        
+        #globals used        
         self.search_list = tk.Listbox(root, selectmode=tk.EXTENDED, 
-                                height = selection_height, width = selection_width, exportselection=False)
+                                height=5,width=32, exportselection=False)
                 
-        for search in searches:
+        for search in self.searches:
             self.search_list.insert(tk.END, search)
         
         #Text
-        tk.Label(root, text="Select a search or multiple searches").grid(row = selection_row, column = selection_column)
+        tk.Label(root, text="Select a search or multiple searches").grid(row =4, column=0)
         
         #Selection    
-        self.search_list.grid(row = selection_row +1, column = selection_column)
+        self.search_list.grid(row=5, column=0)
         self.search_list.bind("<<ListboxSelect>>", self.update_search_selection)
         
         #Search The Searches
-        self.search_selected_button = tk.Button(root, text="Create a new Search from the above", command=self.search_selection).grid(row=selection_row+2, column=selection_column, columnspan=2)        
+        self.search_selected_button = tk.Button(root, text="Create a new Search from the above",
+                            command=self.search_selection).grid(row=6, column=0, sticky=tk.W + tk.E)        
 
         #Text for analytics
-        self.analytics_button = tk.Button(root, text="Analytics", command=self.analytics).grid(row=selection_row+3, column=selection_column, columnspan=2)
+        self.analytics_button = tk.Button(root, text="Analytics", 
+                            command=self.analytics).grid(row=7, column=0, sticky=tk.W + tk.E)
+        
+        #Text for delete search
+        self.search_delete_button = tk.Button(root, text="Delete Selected Entries",
+                                              command=self.delete_selected_searches).grid(row=8, column=0, sticky= tk.W + tk.E)
         
     def update_search_selection(self, event):
         widget = event.widget                   #Get the widget for the event
@@ -129,6 +159,9 @@ class GUI(tk.Frame):
         for term in self.selection:
             self.selected.append(widget.get(term))   #Create a list of values selected
 
+    def delete_selected_searches(self):
+        print("delete selected searches")
+    
     def import_info(self):
         print("imports")
         
@@ -144,9 +177,17 @@ class GUI(tk.Frame):
         # searchJobTitle = self.selected
         # analytic_charts.resultChart(searchJobTitle)
 
+    def about(self):
+        # About option from drop down window
+        # Opens new window to display About message and Disclaimer
+        toplevel = tk.Toplevel()
+        toplevel.iconbitmap('sideprofileCat.ico')
+        label1 = tk.Label(toplevel, text=aboutTxt, height=0, width=60)
+        label1.pack()
+        label2 = tk.Label(toplevel, text=disclaimer, height=0, width=60)
+        label2.pack()
         
     def new_search(self):
-        global searches
         #Get input
         job_title = self.job_title.get()
         location = self.location.get()
@@ -158,13 +199,13 @@ class GUI(tk.Frame):
             return
         
         #Verify uniqueness of search title
-        if search_title in searches:
+        if search_title in self.searches:
             error = "Error: there already exists a search with the name" + search_title
             self.error_search = error
             return
         
         #Add it to searches
-        searches.append(search_title)
+        self.searches.append(search_title)
         
         #Do a search
         search_logic.run_search(job_title, location, search_title)
@@ -175,18 +216,17 @@ class GUI(tk.Frame):
         self.update_idletasks()
     
     def load_settings(self):
-        global searches
+        self.searches = []
         try:
             with open('kattz.settings.json') as settings:
-                searches = json.load(settings)
+                self.searches = json.load(settings)
         except:
             print ("Failed to find file kattz.settings.json")
             
     def update_settings(self):
-        global searches
         with open('kattz.settings.json', 'w') as settings:
             settings.seek(0)
-            write_string = json.dumps(searches)
+            write_string = json.dumps(self.searches)
             settings.write(write_string)
             settings.truncate()
             settings.close()
@@ -194,6 +234,7 @@ class GUI(tk.Frame):
     def search_selection(self):
         text_search = tk.Toplevel()
         text_search.wm_title("Text Search")
+        text_search.iconbitmap('sideprofileCat.ico')
         text_search.resizable(0,0)
         
         #TextSearch
@@ -228,9 +269,9 @@ class GUI(tk.Frame):
         
         #Output
         self.search_text_output = tk.Text(text_search, height=20, width=80)
-        self.search_text_output.config(state=tk.NORMAL)
+        self.search_text_output.config(state=tk.NORMAL)                 #Allow writing
         self.search_text_output.delete('1.0', tk.END)                   #clear the output
-        self.search_text_output.config(state=tk.DISABLED)
+        self.search_text_output.config(state=tk.DISABLED)               #No writing
         self.search_text_output.grid(row=3, column=0, columnspan=5)
         
     def update_field_selection(self, event):
@@ -254,7 +295,6 @@ class GUI(tk.Frame):
         if search_term != ""and not self.field_selected:
             self.output_to_search_text("No field to search for " + search_term)
             return
-        
         
         #Create the database connection
         db = sqlite3.connect(db_name)
@@ -337,11 +377,6 @@ class GUI(tk.Frame):
             self.output_to_search_text("No field to search for " + search_term)
             return
         
-        
-        #Create the database connection
-        db = sqlite3.connect(db_name)
-        db_cursor = db.cursor()
-        
         #Prep to find the searches
         search_list = "'"
         #For singular it is done inside the query string itself
@@ -387,16 +422,18 @@ class GUI(tk.Frame):
             query += "AND (" + field_string + ")"
         
         query += ";"
-        #SQL to save
         
+
     def output_to_search_text(self, message, clear = False):
-        self.search_text_output.config(state=tk.NORMAL)
-        if (clear == True):
-            self.search_text_output.delete('1.0', tk.END)
-        self.search_text_output.insert(tk.END, message)
-        self.search_text_output.config(state=tk.DISABLED)
+        self.search_text_output.config(state=tk.NORMAL)     #Allow text writing to box
+        if (clear == True):                                 #Clear box?
+            self.search_text_output.delete('1.0', tk.END)   #Clear box
+        self.search_text_output.insert(tk.END, message)     #Write from bottom down
+        self.search_text_output.config(state=tk.DISABLED)   #Prevent more writing
         
-        
-    
+
+
+
+	 
 app = GUI()
 app.mainloop()
