@@ -45,7 +45,7 @@ class analyticsGUI(tk.Tk):
         self.resultsButton = Button(self.toolbar, text="Results Chart", command=ResultsChart(self.searchJobTitle),
                                     highlightbackground='grey', height=1, width =20).grid(row=0, column=2)
         # self.playButton.pack(side=TOP, padx=2, pady=2)
-        self.salaryButton = Button(self.toolbar, text="Salary Graph", command=self.doNothing,
+        self.salaryButton = Button(self.toolbar, text="Salary Graph", command=self.analyticsSalHistogram,
                                    highlightbackground='grey').grid(row=1, column=2)
         # self.resetButton.pack(side=BOTTOM, padx=2, pady=2)
 
@@ -67,12 +67,12 @@ class analyticsGUI(tk.Tk):
 
         self.jobType = Label(self.frame, text="Job Type:", background = 'grey').grid(row=4, column=1)
         pie02 = Radiobutton(self.frame, text="Pie Chart", background = 'grey',
-                            variable=self.jobTitleRadio, value=1).grid(row=4, column=2)
+                            variable=self.jobTitleRadio, value=3).grid(row=4, column=2)
         bar02 = Radiobutton(self.frame, text="Bar Graph", background = 'grey',
-                            variable=self.jobTitleRadio, value=2).grid(row=4, column=3)
+                            variable=self.jobTitleRadio, value=4).grid(row=4, column=3)
 
         goButton02 = Button(self.frame, text="Go", highlightbackground='green', width =3,
-                            command=self.selectedJobTitleGo).grid(row=5, column=2)
+                            command=self.selectedJobTypeGo).grid(row=5, column=2)
 
         self.frame.pack()
 
@@ -84,20 +84,99 @@ class analyticsGUI(tk.Tk):
 
         if (self.jobExpRadio.get() == 1):
             print("we want pie")
+            self.analyticsJobExpPieChart()
+
         elif (self.jobExpRadio.get() == 2):
             print("we want bar")
+            self.analyticsJobExpBarChart()
         else:
             self.doNothing()
 
-    def selectedJobTitleGo(self):
+    def selectedJobTypeGo(self):
         print("variable is", self.jobTitleRadio.get())
 
-        if (self.jobTitleRadio.get() == 1):
+        if (self.jobTitleRadio.get() == 3):
             print("we want pie")
-        elif (self.jobTitleRadio.get() == 2):
+            self.analyticsJobTypePieChart()
+        elif (self.jobTitleRadio.get() == 4):
             print("we want bar")
+            self.analyticsJobTypeBarChart()
         else:
             self.doNothing()
+
+
+    def analyticsJobTypePieChart(self):
+        print("")
+        job_types = ['fulltime', 'contract', 'internship', 'temporary',
+                     'parttime', 'commission']
+        slices01 = [7, 2, 13, 34, 40, 10]
+        plt.pie(slices01,
+                labels=job_types,
+                startangle=90,
+                shadow=True,
+                explode=(0, 0, 0, 0, 0, 0),
+                autopct='%1.1f%%')
+        plt.title('job_types Graph')
+        plt.legend()
+        plt.show()
+
+    def analyticsJobTypeBarChart(self):
+        print("")
+        x = [2,4,6,8,10]
+        y = [6,7,8,2,4]
+        x2 = [1,3,5,7,9]
+        y2 = [7,8,2,4,2]
+
+        plt.bar(x,y,label= 'Bar one')
+        plt.bar(x2,y2, label = 'Bar two')
+
+        plt.xlabel('x - axis')
+        plt.ylabel('y - axis')
+        plt.title('Interesting Graph\nCheck it out')
+        plt.legend()
+        plt.show()
+
+    def analyticsJobExpPieChart(self):
+
+        job_exp = ['entry_level', 'mid_level', 'senior_level']
+        slices02 = [7,2,13]
+        plt.pie(slices02,
+                labels=job_exp,
+                startangle=90,
+                shadow=True,
+                explode=(0,0,0),
+                autopct= '%1.1f%%')
+        plt.title('job_exp Graph')
+        plt.legend()
+        plt.show()
+
+    def analyticsJobExpBarChart(self):
+        print("")
+        x = [2,4,6,8,10]
+        y = [6,7,8,2,4]
+        x2 = [1,3,5,7,9]
+        y2 = [7,8,2,4,2]
+
+        plt.bar(x,y,label= 'Bar one')
+        plt.bar(x2,y2, label = 'Bar two')
+
+        plt.xlabel('x - axis')
+        plt.ylabel('y - axis')
+        plt.title('Interesting Graph\nCheck it out')
+        plt.legend()
+        plt.show()
+
+    def analyticsSalHistogram(self):
+        population_ages = [22,55,62,45,21,22,34,42,42,4,88,99,102,110,130,121,122,130,111,115,112,80,75,65,54,44,43,42,48]
+
+        bins = [0,10,20,30,40,50,60,70,80,90,100,110,120,130]
+
+        plt.hist(population_ages, bins, histtype='bar', rwidth= 0.8)
+
+        plt.xlabel('x - axis')
+        plt.ylabel('y - axis')
+        plt.title('Interesting Graph\nCheck it out')
+        plt.show()
 
 class ResultsChart(tk.Tk):
     def __init__(self, searchJobTitle):
@@ -245,50 +324,11 @@ if __name__ == "__main__":
     app.mainloop()
 
 
-def analyticsPieChart(jobTitle, category):
-    print("")
-
-
-
-
-def analyticsBarChart(jobTitle, category):
-    print("")
-
-
-
-
-def analyticsHistogram(jobTitle, category):
-    print("")
 
 
 
 
 
-
-    job_types = ['fulltime', 'contract', 'internship', 'temporary',
-                 'parttime', 'commission']
-    slices01 = [7, 2, 13, 34, 40, 10]
-    plt.pie(slices01,
-            labels=job_types,
-            startangle=90,
-            shadow=True,
-            explode=(0, 1, 0, 0, 0, 0),
-            autopct='%1.1f%%')
-    plt.title('job_types Graph\nCheck it out')
-    plt.legend()
-    plt.show()
-    #
-    # job_exp = ['entry_level', 'mid_level', 'senior_level']
-    # slices02 = [7,2,13]
-    # plt.pie(slices02,
-    #         labels=job_exp,
-    #         startangle=90,
-    #         shadow=True,
-    #         explode=(0,0.1,0),
-    #         autopct= '%1.1f%%')
-    # plt.title('job_exp Graph\nCheck it out')
-    # plt.legend()
-    # plt.show()
 
 
 
