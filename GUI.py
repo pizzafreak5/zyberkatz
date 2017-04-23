@@ -58,7 +58,7 @@ class GUI(tk.Frame):
         self.load_settings()
         
         #Setup the GUI
-        self.error_search = ''
+        self.error_search = ''      #Error string for Search Tab
         
         self.menubar()
 
@@ -135,19 +135,23 @@ class GUI(tk.Frame):
             self.search_list.insert(tk.END, search)
         
         #Text
-        tk.Label(root, text="Select a search or multiple searches").grid(row =4, column=4)
+        tk.Label(root, text="Select a search or multiple searches").grid(row =4, column=0)
         
         #Selection    
-        self.search_list.grid(row =5, column = 4)
+        self.search_list.grid(row=5, column=0)
         self.search_list.bind("<<ListboxSelect>>", self.update_search_selection)
         
         #Search The Searches
         self.search_selected_button = tk.Button(root, text="Create a new Search from the above",
-                            command=self.search_selection).grid(row=6, column=4, columnspan=2)        
+                            command=self.search_selection).grid(row=6, column=0, sticky=tk.W + tk.E)        
 
         #Text for analytics
         self.analytics_button = tk.Button(root, text="Analytics", 
-                            command=self.analytics).grid(row=7, column=4, columnspan=2)
+                            command=self.analytics).grid(row=7, column=0, sticky=tk.W + tk.E)
+        
+        #Text for delete search
+        self.search_delete_button = tk.Button(root, text="Delete Selected Entries",
+                                              command=self.delete_selected_searches).grid(row=8, column=0, sticky= tk.W + tk.E)
         
     def update_search_selection(self, event):
         widget = event.widget                   #Get the widget for the event
@@ -158,6 +162,9 @@ class GUI(tk.Frame):
         for term in self.selection:
             self.selected.append(widget.get(term))   #Create a list of values selected
 
+    def delete_selected_searches(self):
+        print("delete selected searches")
+    
     def import_info(self):
         print("imports")
         
