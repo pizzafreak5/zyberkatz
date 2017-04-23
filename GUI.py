@@ -57,6 +57,8 @@ class GUI(tk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(root)
         root.resizable(0,0)
+        root.iconbitmap('sideprofileCat.ico')
+        root.wm_title("KATTZraper")
         
         self.selected = []
         self.field_selected = []
@@ -100,7 +102,7 @@ class GUI(tk.Frame):
         
         #Zyber Katz
         zmenu = tk.Menu(menubar, tearoff=0)
-        #zmenu.add_command(label="About", command=about)
+        zmenu.add_command(label="About", command=self.about)
         menubar.add_cascade(label="Zyber Katz", menu=zmenu)
 		
 		
@@ -175,6 +177,15 @@ class GUI(tk.Frame):
         searchJobTitle = self.selected
         analytic_charts.resultChart(searchJobTitle)
 
+    def about(self):
+        # About option from drop down window
+        # Opens new window to display About message and Disclaimer
+        toplevel = tk.Toplevel()
+        toplevel.iconbitmap('sideprofileCat.ico')
+        label1 = tk.Label(toplevel, text=aboutTxt, height=0, width=60)
+        label1.pack()
+        label2 = tk.Label(toplevel, text=disclaimer, height=0, width=60)
+        label2.pack()
         
     def new_search(self):
         global searches
@@ -225,6 +236,7 @@ class GUI(tk.Frame):
     def search_selection(self):
         text_search = tk.Toplevel()
         text_search.wm_title("Text Search")
+        text_search.iconbitmap('sideprofileCat.ico')
         text_search.resizable(0,0)
         
         #TextSearch
@@ -368,11 +380,6 @@ class GUI(tk.Frame):
             self.output_to_search_text("No field to search for " + search_term)
             return
         
-        
-        #Create the database connection
-        db = sqlite3.connect(db_name)
-        db_cursor = db.cursor()
-        
         #Prep to find the searches
         search_list = "'"
         #For singular it is done inside the query string itself
@@ -418,8 +425,8 @@ class GUI(tk.Frame):
             query += "AND (" + field_string + ")"
         
         query += ";"
-        #SQL to save
         
+
     def output_to_search_text(self, message, clear = False):
         self.search_text_output.config(state=tk.NORMAL)
         if (clear == True):
