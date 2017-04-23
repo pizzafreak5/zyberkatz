@@ -138,7 +138,11 @@ class GUI(tk.Frame):
     def analytics(self):
         print("analytics")
         searchJobTitle = self.selected
-        analytic_charts.resultChart(searchJobTitle)
+
+        tmp = analytic_charts.analyticsGUI(searchJobTitle)
+
+        # searchJobTitle = self.selected
+        # analytic_charts.resultChart(searchJobTitle)
 
         
     def new_search(self):

@@ -1,7 +1,9 @@
 
 import sqlite3
 import tkinter as tk
-from tkinter import N, W, RAISED
+from tkinter import *
+#from tkinter import ttk
+    #N, W, RAISED, Frame, LEFT, IntVar, Button, TOP, CENTER, X, Y, BOTTOM, Label,Checkbutton
 import webbrowser
 import matplotlib
 
@@ -9,6 +11,10 @@ matplotlib.use("TkAgg")  # Needed so that tkinter doesn't crash
 from matplotlib import pyplot as plt
 import numpy as np
 
+# Font size for the title
+LARGE_FONT = ("fixedsys", 18)
+SMALL_FONT = ("arial", 7)
+BUTTON_FONT = ("arial", 14)
 
 global_db_name = 'zyber.db'
 rowNumber = 1
@@ -18,57 +24,90 @@ row_info = ['Company',
             'Salary',
             'Web Links']
 
-class resultChart(tk.Tk):
+class analyticsGUI(tk.Tk):
     def __init__(self, searchJobTitle):
+        self.searchJobTitle= searchJobTitle
+        self.analyticsPage()
 
+
+
+    def analyticsPage(self):
+
+        self.analyticsWindow = tk.Toplevel(background = 'grey')
+        self.analyticsWindow.wm_title("Analytics")
+        self.analyticsWindow.wm_geometry("300x200")
+        #self.analyticsWindow.resizable(0, 0)
+
+        # ****** Top  Toolbar ********
+        self.toolbar = Frame(self.analyticsWindow, background = 'grey')
+
+        # ****** Top Button Toolbar ********
+        self.resultsButton = Button(self.toolbar, text="Results Chart", command=ResultsChart(self.searchJobTitle),
+                                    highlightbackground='grey', height=1, width =20).grid(row=0, column=2)
+        # self.playButton.pack(side=TOP, padx=2, pady=2)
+        self.salaryButton = Button(self.toolbar, text="Salary Graph", command=self.doNothing,
+                                   highlightbackground='grey').grid(row=1, column=2)
+        # self.resetButton.pack(side=BOTTOM, padx=2, pady=2)
+
+        self.toolbar.pack(side=TOP, fill=Y)  # Adds toolbar to frame
+
+        # ****** Main Input Frame *******
+        self.jobExpRadio = IntVar()
+        self.jobTitleRadio = IntVar()
+
+        self.frame = Frame(self.analyticsWindow,background = 'grey')
+        self.jobExp = Label(self.frame, text="Job Experience:", background = 'grey').grid(row=2, column=1)
+        pie01 = Radiobutton(self.frame, text="Pie Chart", background = 'grey',
+                            variable=self.jobExpRadio, value=1).grid(row=2, column=2)
+        bar01 = Radiobutton(self.frame, text="Bar Graph", background = 'grey',
+                            variable=self.jobExpRadio, value=2).grid(row=2, column=3)
+
+        goButton01 = Button(self.frame, text="Go", highlightbackground='green', width =3,
+                            command=self.selectedJobExpGo).grid(row=3, column=2)
+
+        self.jobType = Label(self.frame, text="Job Type:", background = 'grey').grid(row=4, column=1)
+        pie02 = Radiobutton(self.frame, text="Pie Chart", background = 'grey',
+                            variable=self.jobTitleRadio, value=1).grid(row=4, column=2)
+        bar02 = Radiobutton(self.frame, text="Bar Graph", background = 'grey',
+                            variable=self.jobTitleRadio, value=2).grid(row=4, column=3)
+
+        goButton02 = Button(self.frame, text="Go", highlightbackground='green', width =3,
+                            command=self.selectedJobTitleGo).grid(row=5, column=2)
+
+        self.frame.pack()
+
+    def doNothing(self):
+        print("nothing")
+
+    def selectedJobExpGo(self):
+        print("variable is", self.jobExpRadio.get())
+
+        if (self.jobExpRadio.get() == 1):
+            print("we want pie")
+        elif (self.jobExpRadio.get() == 2):
+            print("we want bar")
+        else:
+            self.doNothing()
+
+    def selectedJobTitleGo(self):
+        print("variable is", self.jobTitleRadio.get())
+
+        if (self.jobTitleRadio.get() == 1):
+            print("we want pie")
+        elif (self.jobTitleRadio.get() == 2):
+            print("we want bar")
+        else:
+            self.doNothing()
+
+class ResultsChart(tk.Tk):
+    def __init__(self, searchJobTitle):
         tk.Tk.__init__(self)
-        # ---------------
-        # DB SETUP
-        # ---------------
-        # db = sqlite3.connect(global_db_name)  # Connect to the project database
-        # db_cursor = db.cursor()
-
-        self.grabJobTitle(searchJobTitle)
-
-        # Show the entries in the database
-        # column_names_short = [
-        #     'Company',
-        #     'Job title',
-        #     'Location'
-        # ]
-        # sql_info = []  # each job is a index value
-
-        # row_info = ['Company',
-        #             'Job title',
-        #             'Location',
-        #             'Salary',
-        #             'Web Links']
-        # rowNumber = 1
-        # for row in db_cursor.execute(
-        #         #'SELECT company, job_title, job_loc, salary_est, link FROM listing'):  # WHERE job_loc LIKE "%'+state+'%"'):
-        #         'SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE job_title LIKE "%'+searchJobTitle+'%"'):
-        #     print('ENTRY:\n**********************************************************')
-        #
-        #     # ('SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE
-        #     # hash_val IN (SELECT hash_val FROM junction WHERE search_hash IN (SELECT
-        #     # search_hash FROM search WHERE search_title = 'mysearchinthemiddleofthesearch'))
-        #
-        #     for i in range(len(row)):
-        #         row_info.append(row[i])
-        #         print(row_info)
-        #
-        #     print('**********************************************************\n')
-        #     rowNumber += 1
-        #
-        # print(rowNumber, " entries found")
-
-
-        #t = SimpleTable(self, rowNumber, 5)
-
-        #t.pack(side="top", fill="x")
+        self.searchJobTitle = searchJobTitle
+        self.grabJobTitle(self.searchJobTitle)
 
 
     def grabJobTitle(self, searchJobTitle):
+
         # ---------------
         # DB SETUP
         # ---------------
@@ -116,7 +155,6 @@ class resultChart(tk.Tk):
 
         t = SimpleTable(self, rowNumber, 5)
 
-        # t.pack(side="top", fill="x")
 
 class SimpleTable(tk.Frame):
 
@@ -199,17 +237,11 @@ class SimpleTable(tk.Frame):
         widget.configure(text=value)
 
 
-        # Attach Scrollbar to Listbox
-        # scrollbar = Scrollbar(parent)
-        # scrollbar.pack(side=RIGHT, fill=Y)
-        # parent.config(yscrollcommand=scrollbar.set)
-        # scrollbar.config(command=parent.yview)
-
 
 
 if __name__ == "__main__":
     searchJobTitle =""
-    app = resultChart(searchJobTitle)
+    app = ResultsChart(searchJobTitle)
     app.mainloop()
 
 
