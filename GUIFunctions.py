@@ -20,7 +20,7 @@ import search_logic
 import matplotlib
 matplotlib.use("TkAgg") # neede so that tkinter doesn't crash
 from matplotlib import pyplot as plt
-import analytic_charts
+import analytics_chart
 from tkinter import messagebox
 import sys
 import datetime
@@ -152,7 +152,7 @@ def newSearch(jobTitle, location, searchTitle):
 
 def returnResults(search):
     print(search)
-    analytic_charts.resultChart(search)
+    analytics_chart.resultChart(search)
 
 
 def createPieChart(search,graph,category):
