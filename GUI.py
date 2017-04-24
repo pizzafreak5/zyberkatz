@@ -5,7 +5,7 @@ import tkinter.messagebox
 import json
 import search_logic
 import sqlite3
-import analytic_charts
+import analytic_gui
 
 aboutTxt = """
 Katz Attack Triple Threat Z'craper: (KATTZ)
@@ -189,7 +189,7 @@ class GUI(tk.Frame):
     def analytics(self):
         print("analytics")
         searchJobTitle = self.selected
-        tmp = analytic_charts.analyticsGUI(searchJobTitle)
+        tmp = analytic_gui.analyticsGUI(searchJobTitle)
 
     def about(self):
         # About option from drop down window
