@@ -2,20 +2,19 @@
 import sqlite3
 import tkinter as tk
 from tkinter import *
-#from tkinter import ttk
-    #N, W, RAISED, Frame, LEFT, IntVar, Button, TOP, CENTER, X, Y, BOTTOM, Label,Checkbutton
-import webbrowser
 import matplotlib
-
 matplotlib.use("TkAgg")  # Needed so that tkinter doesn't crash
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
+import numpy.ma
 import matplotlib.pyplot as plt
 
 # Font size for the title
 LARGE_FONT = ("fixedsys", 18)
 SMALL_FONT = ("arial", 7)
 BUTTON_FONT = ("arial", 14)
+
+import analytics_chart
 
 global_db_name = 'zyber.db'
 rowNumber = 1
@@ -43,7 +42,7 @@ class analyticsGUI(tk.Tk):
         self.toolbar = Frame(self.analyticsWindow, background = 'grey')
 
         # ****** Top Button Toolbar ********
-        self.resultsButton = Button(self.toolbar, text="Results Chart", command=ResultsChart(self.searchJobTitle),
+        self.resultsButton = Button(self.toolbar, text="Results Chart", command=self.goResultsChart,
                                     highlightbackground='grey', height=1, width =20).grid(row=0, column=2)
 
 
@@ -86,48 +85,49 @@ class analyticsGUI(tk.Tk):
 
         self.frame.pack()
 
+
+    def goResultsChart(self):
+        searchJobTitle = self.searchJobTitle
+        tmp = analytics_chart.ResultsChart(searchJobTitle)
     def doNothing(self):
-        print("nothing")
+        print("")
 
     def selectedSalaryEstGo(self):
-        print("variable is", self.salaryEstRadio.get())
+        #print("variable is", self.salaryEstRadio.get())
 
         if (self.salaryEstRadio.get() == 1):
-            print("we want pie")
+
             self.analyticsSalaryPieChart()
         elif (self.salaryEstRadio.get() == 2):
-            print("we want bar")
+
             self.analyticsSalaryBarChart()
         else:
             self.doNothing()
 
     def selectedJobExpGo(self):
-        print("variable is", self.jobExpRadio.get())
+        #print("variable is", self.jobExpRadio.get())
 
         if (self.jobExpRadio.get() == 3):
-            print("we want pie")
+
             self.analyticsJobExpPieChart()
 
         elif (self.jobExpRadio.get() == 4):
-            print("we want bar")
+
             self.analyticsJobExpBarChart()
         else:
             self.doNothing()
 
     def selectedJobTypeGo(self):
-        print("variable is", self.jobTitleRadio.get())
+        #print("variable is", self.jobTitleRadio.get())
 
         if (self.jobTitleRadio.get() == 5):
-            print("we want pie")
+
             self.analyticsJobTypePieChart()
         elif (self.jobTitleRadio.get() == 6):
-            print("we want bar")
+
             self.analyticsJobTypeBarChart()
         else:
             self.doNothing()
-
-
-
 
     def analyticsJobTypePieChart(self):
         # ---------------
@@ -146,20 +146,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                        SELECT job_type
-                        from listing
-                        where hash_val
-                        in
-                        (
-                        select hash_val
-                        from junction
-                        where search_hash
-                        in
-                        (
-                        select search_hash
-                        from search
-                        where search_title = {}));
-                        '''.format(search_list)
+                SELECT job_type
+                from listing
+                where hash_val
+                in
+                (
+                select hash_val
+                from junction
+                where search_hash
+                in
+                (
+                select search_hash
+                from search
+                where search_title = {}));
+                '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -188,10 +188,9 @@ class analyticsGUI(tk.Tk):
                     temp = jobTypesNumbersList[5]
                     temp = temp + 1
                     jobTypesNumbersList[5] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(jobTypesNumbersList)
-
+        #print(jobTypesNumbersList)
 
         job_types = ['fulltime', 'contract', 'internship', 'temporary',
                      'parttime', 'commission']
@@ -199,9 +198,9 @@ class analyticsGUI(tk.Tk):
                 labels=job_types,
                 #startangle=90,
                 shadow=True,
-                explode=(0, 0, 0, 0, 0, 0),
+                explode=(0,0,0,0,0,0),
                 autopct='%1.1f%%')
-        plt.title('job_types Graph')
+        plt.title('{0} Job Types Graph'.format(search_list))
         plt.legend()
         plt.show()
 
@@ -222,20 +221,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                                SELECT job_type
-                                from listing
-                                where hash_val
-                                in
-                                (
-                                select hash_val
-                                from junction
-                                where search_hash
-                                in
-                                (
-                                select search_hash
-                                from search
-                                where search_title = {}));
-                                '''.format(search_list)
+                SELECT job_type
+                from listing
+                where hash_val
+                in
+                (
+                select hash_val
+                from junction
+                where search_hash
+                in
+                (
+                select search_hash
+                from search
+                where search_title = {}));
+                '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -264,9 +263,9 @@ class analyticsGUI(tk.Tk):
                     temp = jobTypesNumbersList[5]
                     temp = temp + 1
                     jobTypesNumbersList[5] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(jobTypesNumbersList)
+        #print(jobTypesNumbersList)
 
         objects = ('fulltime', 'contract', 'internship', 'temporary',
                      'parttime', 'commission')
@@ -276,8 +275,7 @@ class analyticsGUI(tk.Tk):
         plt.xticks(y_pos, objects)
         plt.xlabel('Job Types')
         plt.ylabel('Number of Types')
-        plt.title('job_types Graph')
-
+        plt.title('{0} Job Types Graph'.format(search_list))
 
         plt.show()
 
@@ -299,20 +297,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                               SELECT job_exp
-                               from listing
-                               where hash_val
-                               in
-                               (
-                               select hash_val
-                               from junction
-                               where search_hash
-                               in
-                               (
-                               select search_hash
-                               from search
-                               where search_title = {}));
-                               '''.format(search_list)
+               SELECT job_exp
+               from listing
+               where hash_val
+               in
+               (
+               select hash_val
+               from junction
+               where search_hash
+               in
+               (
+               select search_hash
+               from search
+               where search_title = {}));
+               '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -329,10 +327,9 @@ class analyticsGUI(tk.Tk):
                     temp = jobExpNumbersList[2]
                     temp = temp + 1
                     jobExpNumbersList[2] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(jobExpNumbersList)
-
+        #print(jobExpNumbersList)
 
         job_exp = ['entry_level', 'mid_level', 'senior_level']
 
@@ -342,7 +339,7 @@ class analyticsGUI(tk.Tk):
                 shadow=True,
                 explode=(0,0,0),
                 autopct= '%1.1f%%')
-        plt.title('job_exp Graph')
+        plt.title('{0} Job Experience Graph'.format(search_list))
         plt.legend()
         plt.show()
 
@@ -364,20 +361,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                                      SELECT job_exp
-                                      from listing
-                                      where hash_val
-                                      in
-                                      (
-                                      select hash_val
-                                      from junction
-                                      where search_hash
-                                      in
-                                      (
-                                      select search_hash
-                                      from search
-                                      where search_title = {}));
-                                      '''.format(search_list)
+              SELECT job_exp
+              from listing
+              where hash_val
+              in
+              (
+              select hash_val
+              from junction
+              where search_hash
+              in
+              (
+              select search_hash
+              from search
+              where search_title = {}));
+              '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -394,9 +391,9 @@ class analyticsGUI(tk.Tk):
                     temp = jobExpNumbersList[2]
                     temp = temp + 1
                     jobExpNumbersList[2] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(jobExpNumbersList)
+        #print(jobExpNumbersList)
 
 
         objects = ('entry_level', 'mid_level', 'senior_level')
@@ -406,8 +403,7 @@ class analyticsGUI(tk.Tk):
         plt.xticks(y_pos, objects)
         plt.xlabel('Types of Experience')
         plt.ylabel('Level of Experience')
-        plt.title('job_exp Graph')
-
+        plt.title('{0} Job Experience Graph'.format(search_list))
 
         plt.show()
 
@@ -431,20 +427,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                      SELECT salary_est
-                      from listing
-                      where hash_val
-                      in
-                      (
-                      select hash_val
-                      from junction
-                      where search_hash
-                      in
-                      (
-                      select search_hash
-                      from search
-                      where search_title = {}));
-                      '''.format(search_list)
+              SELECT salary_est
+              from listing
+              where hash_val
+              in
+              (
+              select hash_val
+              from junction
+              where search_hash
+              in
+              (
+              select search_hash
+              from search
+              where search_title = {}));
+              '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -469,21 +465,22 @@ class analyticsGUI(tk.Tk):
                     temp = salaryEstNumbersList[2]
                     temp = temp + 1
                     salaryEstNumbersList[2] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(salaryEstNumbersList)
+        #print(salaryEstNumbersList)
 
         salary_est = ['$14,000','$30,000','$50,000','$70,000','$90,000']
 
         plt.pie(salaryEstNumbersList,
                 labels=salary_est,
-                # startangle=90,
+                #startangle=90,
                 shadow=True,
                 explode=(0, 0, 0, 0, 0),
                 autopct='%1.1f%%')
-        plt.title('salary-est Graph')
+        plt.title('{0} Salary Estimate Graph'.format(search_list))
         plt.legend()
         plt.show()
+
 
     def analyticsSalaryBarChart(self):
 
@@ -503,20 +500,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                      SELECT salary_est
-                      from listing
-                      where hash_val
-                      in
-                      (
-                      select hash_val
-                      from junction
-                      where search_hash
-                      in
-                      (
-                      select search_hash
-                      from search
-                      where search_title = {}));
-                      '''.format(search_list)
+              SELECT salary_est
+              from listing
+              where hash_val
+              in
+              (
+              select hash_val
+              from junction
+              where search_hash
+              in
+              (
+              select search_hash
+              from search
+              where search_title = {}));
+              '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -541,9 +538,9 @@ class analyticsGUI(tk.Tk):
                     temp = salaryEstNumbersList[2]
                     temp = temp + 1
                     salaryEstNumbersList[2] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(salaryEstNumbersList)
+        #print(salaryEstNumbersList)
 
         objects = ('$14,000','$30,000','$50,000','$70,000','$90,000')
         y_pos = np.arange(len(objects))
@@ -552,155 +549,11 @@ class analyticsGUI(tk.Tk):
         plt.xticks(y_pos, objects)
         plt.xlabel('Salary Levels')
         plt.ylabel('Number of Positions')
-        plt.title('salary_est Graph')
+        plt.title('{0} Salary Estimate Graph'.format(search_list))
 
         plt.show()
 
-class ResultsChart(tk.Tk):
-    def __init__(self, searchJobTitle):
-        tk.Tk.__init__(self)
-        self.searchJobTitle = searchJobTitle
-        self.grabJobTitle(self.searchJobTitle)
 
-
-    def grabJobTitle(self, searchJobTitle):
-
-
-        # ---------------
-        # DB SETUP
-        # ---------------
-        db = sqlite3.connect(global_db_name)  # Connect to the project database
-        db_cursor = db.cursor()
-
-        # Prep to find the searches
-        search_list = "'"
-        # For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(searchJobTitle)
-        search_list += "'"
-
-        # Query
-        query = '''
-                SELECT company, job_title, job_loc, salary_est, link
-                from listing
-                where hash_val
-                in
-                (
-                select hash_val
-                from junction
-                where search_hash
-                in
-                (
-                select search_hash
-                from search
-                where search_title = {}));
-                '''.format(search_list)
-        rowNumber = 1
-        for row in db_cursor.execute(query):
-            # print('ENTRY:\n**********************************************************')
-
-            # ('SELECT company, job_title, job_loc, salary_est, link FROM listing WHERE
-            # hash_val IN (SELECT hash_val FROM junction WHERE search_hash IN (SELECT
-            # search_hash FROM search WHERE search_title = 'mysearchinthemiddleofthesearch'))
-
-            for i in range(len(row)):
-                row_info.append(row[i])
-                # print(row_info)
-
-            # print('**********************************************************\n')
-            rowNumber += 1
-
-        print(rowNumber, " entries found")
-
-        t = SimpleTable(self, rowNumber, 5)
-
-
-class SimpleTable(tk.Frame):
-
-    def callback(self, event, link):
-        print(link)
-        webbrowser.open_new(link)
-
-    def OnFrameConfigure(self, event):
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-
-    def __init__(self, parent, rows=rowNumber, columns=5):
-
-        self.canvas = tk.Canvas(parent, borderwidth=5, background="grey", height = 350, width = 1080)
-        tk.Frame.__init__(self, self.canvas)
-
-
-
-
-        columnNames = [
-            'Company',
-            'Job title',
-            'Location',
-            'Salary',
-            'Web Link'
-        ]
-
-        #tk.Frame.__init__(self, parent, background="grey")
-        parent.title("Search Results")
-       # parent.resizable(width=False, height=False)  # Makes user unable to resize window
-
-        self._widgets = []
-        self.webLink = ""
-
-        cellCount = 0
-
-        for row in range(rows):
-            current_row = []
-            for column in range(columns):
-
-                #if (row == 0):
-                #    label = tk.Label(self, text="%s/%s" % (columnNames[column], column),
-                #                     borderwidth=0, width=20)
-                if (column == 4 and row != 0):
-                     link = row_info[cellCount]
-
-                     label = tk.Label(self, text="Job Posting", fg="blue", cursor="hand2", relief=RAISED)#,
-                                                    #borderwidth = 0)#, width = 10)
-                     label.bind("<Button-1>", lambda event, arg=link: self.callback(event, arg))
-
-                else:
-                    label = tk.Label(self, text="%s" % (row_info[cellCount]), relief=RAISED)#,
-                                     #borderwidth=0)#, width=20)
-                if (row == 0):
-                    label.configure(background='grey')
-
-                label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                current_row.append(label)
-                cellCount = cellCount+1
-            self._widgets.append(current_row)
-
-        for column in range(columns):
-            self.grid_columnconfigure(column, weight=1)
-
-        self.vsb = tk.Scrollbar(parent, orient="vertical", command=self.canvas.yview)
-        self.canvas.configure(yscrollcommand=self.vsb.set)
-
-        self.vsb01 = tk.Scrollbar(parent, orient="horizontal", command=self.canvas.xview)
-        self.canvas.configure(xscrollcommand=self.vsb01.set)
-
-        self.vsb.pack(side="right", fill="y")
-        self.vsb01.pack(side="bottom", fill="x")
-
-        self.canvas.pack(side="left", fill="both", expand=True)
-        self.canvas.create_window((0,0), window=self, anchor=N+W)
-        self.bind("<Configure>", self.OnFrameConfigure)
-
-
-    def set(self, row, column, value):
-        widget = self._widgets[row][column]
-        widget.configure(text=value)
-
-
-
-
-if __name__ == "__main__":
-    searchJobTitle =""
-    app = ResultsChart(searchJobTitle)
-    app.mainloop()
 
 
 
