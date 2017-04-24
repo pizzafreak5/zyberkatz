@@ -416,21 +416,17 @@ class GUI(tk.Frame):
         if from_custom_search:  #There is a saved search selected
             if len(from_custom_search) > 1:
                 #Multiple custom searches selected
-                count = 0
                 for key in from_custom_search:
                     partial_query = from_custom_search[key]
                                     
                     if partial_query.endswith(";"):#query appended has a semicolon at the end
                         partial_query = partial_query[:-1] #remove the ;
                     
-                    #Last value or first value
-                    if (count == len(from_custom_search) - 1):
+                    if query == "":
                         query += partial_query
-                    elif (len(from_custom_search)==2 and count == 0):
-                        query += partial_query + " UNION "
                     else:
                         query += " UNION " + partial_query
-                    count += 1
+                    
             else:                #Single custom search selected
                 for key in from_custom_search:
                     partial_query = from_custom_search[key]
@@ -450,8 +446,10 @@ class GUI(tk.Frame):
             #   query = "(" + query + ")"
             
         if search_text != "":
-            query += "AND (" + self.prepare_search_text_statement(selected_fields, 
+            query += " AND (" + self.prepare_search_text_statement(selected_fields, 
                                             search_text) + ")"
+            #query = "(" + query + ")"  + " AND (" + self.prepare_search_text_statement(selected_fields, 
+            #                                search_text) + ")"
         if query.endswith(";") == False:
             query += ";"
         
