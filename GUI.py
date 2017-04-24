@@ -5,7 +5,7 @@ import tkinter.messagebox
 import json
 import search_logic
 import sqlite3
-import analytic_gui
+import analytics_gui
 
 aboutTxt = """
 Katz Attack Triple Threat Z'craper: (KATTZ)
@@ -189,7 +189,7 @@ class GUI(tk.Frame):
     def analytics(self):
         print("analytics")
         searchJobTitle = self.selected
-        tmp = analytic_gui.analyticsGUI(searchJobTitle)
+        tmp = analytics_gui.analyticsGUI(searchJobTitle)
 
     def about(self):
         # About option from drop down window
@@ -386,7 +386,7 @@ class GUI(tk.Frame):
                 field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
             else:
                 if (len(selected_fields)-1 != i):
-                    field_string += "lower({}) LIKE '%{}%' or ".format(selected_fields[i], search_term)
+                    field_string += "lower({}) LIKE '%{}%' or \n".format(selected_fields[i], search_term)
                 else:
                     field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
         
@@ -416,28 +416,26 @@ class GUI(tk.Frame):
         if from_custom_search:  #There is a saved search selected
             if len(from_custom_search) > 1:
                 #Multiple custom searches selected
-                query += "("
                 count = 0
                 for key in from_custom_search:
                     partial_query = from_custom_search[key]
-                    #the query that is appended has a semicolon at the end
-                    if partial_query.endswith(";"):
+                                    
+                    if partial_query.endswith(";"):#query appended has a semicolon at the end
                         partial_query = partial_query[:-1] #remove the ;
                     
-                    #Last value
+                    #Last value or first value
                     if (count == len(from_custom_search) - 1):
                         query += partial_query
-                        
+                    elif (len(from_custom_search)==2 and count == 0):
+                        query += partial_query + " UNION "
                     else:
-                        query += " OR " + partial_query
-                query += ")"
-            else:
-                #Single custom search selected
+                        query += " UNION " + partial_query
+                    count += 1
+            else:                #Single custom search selected
                 for key in from_custom_search:
                     partial_query = from_custom_search[key]
-                    #the query that is appended has a semicolon at the end
                     if partial_query.endswith(";"):
-                        partial_query = partial_query[:-1] #remove the ;
+                        partial_query = partial_query[:-1]
                     query += partial_query
                                     
         
@@ -446,10 +444,10 @@ class GUI(tk.Frame):
             if query == "":
                 query = self.create_search_query_from_searches(from_search, SELECT)
             else:
-                query += " OR " + self.create_search_query_from_searches(from_search, SELECT)
+                query += " UNION " + self.create_search_query_from_searches(from_search, SELECT)
                 
-            if from_custom_search:
-                query = "(" + query + ")"
+            #if from_custom_search:
+            #   query = "(" + query + ")"
             
         if search_text != "":
             query += "AND (" + self.prepare_search_text_statement(selected_fields, 
