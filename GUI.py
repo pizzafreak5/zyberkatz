@@ -183,9 +183,7 @@ class GUI(tk.Frame):
         print("export")
         
     def analytics(self):
-        print("analytics")
         searchJobTitle = self.selected
-
         tmp = analytics_gui.analyticsGUI(searchJobTitle)
 
     def about(self):

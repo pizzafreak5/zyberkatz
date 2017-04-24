@@ -2,15 +2,8 @@
 import sqlite3
 import tkinter as tk
 from tkinter import *
-#from tkinter import ttk
-    #N, W, RAISED, Frame, LEFT, IntVar, Button, TOP, CENTER, X, Y, BOTTOM, Label,Checkbutton
 import webbrowser
-import matplotlib
 
-matplotlib.use("TkAgg")  # Needed so that tkinter doesn't crash
-import matplotlib.pyplot as plt; plt.rcdefaults()
-import numpy as np
-import matplotlib.pyplot as plt
 
 # Font size for the title
 LARGE_FONT = ("fixedsys", 18)
@@ -18,12 +11,8 @@ SMALL_FONT = ("arial", 7)
 BUTTON_FONT = ("arial", 14)
 
 global_db_name = 'zyber.db'
-rowNumber = 1
-row_info = ['Company',
-            'Job title',
-            'Location',
-            'Salary',
-            'Web Links']
+#rowNumber = 1
+
 
 
 
@@ -36,7 +25,11 @@ class ResultsChart(tk.Tk):
 
     def grabJobTitle(self, searchJobTitle):
 
-
+        row_info = ['Company',
+                    'Job title',
+                    'Location',
+                    'Salary',
+                    'Web Links']
         # ---------------
         # DB SETUP
         # ---------------
@@ -72,21 +65,21 @@ class ResultsChart(tk.Tk):
 
             rowNumber += 1
 
-        print(rowNumber, " entries found")
+        #print(rowNumber, " entries found")
 
-        t = SimpleTable(self, rowNumber, 5)
+        t = SimpleTable(self,row_info, rowNumber, 5)
 
 
 class SimpleTable(tk.Frame):
 
     def callback(self, event, link):
-        print(link)
+        # print(link)
         webbrowser.open_new(link)
 
     def OnFrameConfigure(self, event):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
-    def __init__(self, parent, rows=rowNumber, columns=5):
+    def __init__(self, parent, row_info, rows=1, columns=5):
 
         self.canvas = tk.Canvas(parent, borderwidth=5, background="grey", height = 350, width = 1080)
         tk.Frame.__init__(self, self.canvas)
@@ -104,7 +97,7 @@ class SimpleTable(tk.Frame):
 
         #tk.Frame.__init__(self, parent, background="grey")
         parent.title("Search Results")
-       # parent.resizable(width=False, height=False)  # Makes user unable to resize window
+        #parent.resizable(width=False, height=False)  # Makes user unable to resize window
 
         self._widgets = []
         self.webLink = ""

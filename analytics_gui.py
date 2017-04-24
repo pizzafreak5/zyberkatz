@@ -2,13 +2,11 @@
 import sqlite3
 import tkinter as tk
 from tkinter import *
-#from tkinter import ttk
-    #N, W, RAISED, Frame, LEFT, IntVar, Button, TOP, CENTER, X, Y, BOTTOM, Label,Checkbutton
-import webbrowser
 import matplotlib
 matplotlib.use("TkAgg")  # Needed so that tkinter doesn't crash
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
+import numpy.ma
 import matplotlib.pyplot as plt
 
 # Font size for the title
@@ -91,46 +89,45 @@ class analyticsGUI(tk.Tk):
     def goResultsChart(self):
         searchJobTitle = self.searchJobTitle
         tmp = analytics_chart.ResultsChart(searchJobTitle)
+    def doNothing(self):
+        print("")
 
     def selectedSalaryEstGo(self):
-        print("variable is", self.salaryEstRadio.get())
+        #print("variable is", self.salaryEstRadio.get())
 
         if (self.salaryEstRadio.get() == 1):
-            print("we want pie")
+
             self.analyticsSalaryPieChart()
         elif (self.salaryEstRadio.get() == 2):
-            print("we want bar")
+
             self.analyticsSalaryBarChart()
         else:
             self.doNothing()
 
     def selectedJobExpGo(self):
-        print("variable is", self.jobExpRadio.get())
+        #print("variable is", self.jobExpRadio.get())
 
         if (self.jobExpRadio.get() == 3):
-            print("we want pie")
+
             self.analyticsJobExpPieChart()
 
         elif (self.jobExpRadio.get() == 4):
-            print("we want bar")
+
             self.analyticsJobExpBarChart()
         else:
             self.doNothing()
 
     def selectedJobTypeGo(self):
-        print("variable is", self.jobTitleRadio.get())
+        #print("variable is", self.jobTitleRadio.get())
 
         if (self.jobTitleRadio.get() == 5):
-            print("we want pie")
+
             self.analyticsJobTypePieChart()
         elif (self.jobTitleRadio.get() == 6):
-            print("we want bar")
+
             self.analyticsJobTypeBarChart()
         else:
             self.doNothing()
-
-
-
 
     def analyticsJobTypePieChart(self):
         # ---------------
@@ -149,20 +146,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                        SELECT job_type
-                        from listing
-                        where hash_val
-                        in
-                        (
-                        select hash_val
-                        from junction
-                        where search_hash
-                        in
-                        (
-                        select search_hash
-                        from search
-                        where search_title = {}));
-                        '''.format(search_list)
+                SELECT job_type
+                from listing
+                where hash_val
+                in
+                (
+                select hash_val
+                from junction
+                where search_hash
+                in
+                (
+                select search_hash
+                from search
+                where search_title = {}));
+                '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -191,10 +188,9 @@ class analyticsGUI(tk.Tk):
                     temp = jobTypesNumbersList[5]
                     temp = temp + 1
                     jobTypesNumbersList[5] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(jobTypesNumbersList)
-
+        #print(jobTypesNumbersList)
 
         job_types = ['fulltime', 'contract', 'internship', 'temporary',
                      'parttime', 'commission']
@@ -202,9 +198,9 @@ class analyticsGUI(tk.Tk):
                 labels=job_types,
                 #startangle=90,
                 shadow=True,
-                explode=(0, 0, 0, 0, 0, 0),
+                explode=(0,0,0,0,0,0),
                 autopct='%1.1f%%')
-        plt.title('job_types Graph')
+        plt.title('{0} Job Types Graph'.format(search_list))
         plt.legend()
         plt.show()
 
@@ -225,20 +221,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                                SELECT job_type
-                                from listing
-                                where hash_val
-                                in
-                                (
-                                select hash_val
-                                from junction
-                                where search_hash
-                                in
-                                (
-                                select search_hash
-                                from search
-                                where search_title = {}));
-                                '''.format(search_list)
+                SELECT job_type
+                from listing
+                where hash_val
+                in
+                (
+                select hash_val
+                from junction
+                where search_hash
+                in
+                (
+                select search_hash
+                from search
+                where search_title = {}));
+                '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -267,9 +263,9 @@ class analyticsGUI(tk.Tk):
                     temp = jobTypesNumbersList[5]
                     temp = temp + 1
                     jobTypesNumbersList[5] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(jobTypesNumbersList)
+        #print(jobTypesNumbersList)
 
         objects = ('fulltime', 'contract', 'internship', 'temporary',
                      'parttime', 'commission')
@@ -279,8 +275,7 @@ class analyticsGUI(tk.Tk):
         plt.xticks(y_pos, objects)
         plt.xlabel('Job Types')
         plt.ylabel('Number of Types')
-        plt.title('job_types Graph')
-
+        plt.title('{0} Job Types Graph'.format(search_list))
 
         plt.show()
 
@@ -302,20 +297,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                               SELECT job_exp
-                               from listing
-                               where hash_val
-                               in
-                               (
-                               select hash_val
-                               from junction
-                               where search_hash
-                               in
-                               (
-                               select search_hash
-                               from search
-                               where search_title = {}));
-                               '''.format(search_list)
+               SELECT job_exp
+               from listing
+               where hash_val
+               in
+               (
+               select hash_val
+               from junction
+               where search_hash
+               in
+               (
+               select search_hash
+               from search
+               where search_title = {}));
+               '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -332,10 +327,9 @@ class analyticsGUI(tk.Tk):
                     temp = jobExpNumbersList[2]
                     temp = temp + 1
                     jobExpNumbersList[2] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(jobExpNumbersList)
-
+        #print(jobExpNumbersList)
 
         job_exp = ['entry_level', 'mid_level', 'senior_level']
 
@@ -345,7 +339,7 @@ class analyticsGUI(tk.Tk):
                 shadow=True,
                 explode=(0,0,0),
                 autopct= '%1.1f%%')
-        plt.title('job_exp Graph')
+        plt.title('{0} Job Experience Graph'.format(search_list))
         plt.legend()
         plt.show()
 
@@ -367,20 +361,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                                      SELECT job_exp
-                                      from listing
-                                      where hash_val
-                                      in
-                                      (
-                                      select hash_val
-                                      from junction
-                                      where search_hash
-                                      in
-                                      (
-                                      select search_hash
-                                      from search
-                                      where search_title = {}));
-                                      '''.format(search_list)
+              SELECT job_exp
+              from listing
+              where hash_val
+              in
+              (
+              select hash_val
+              from junction
+              where search_hash
+              in
+              (
+              select search_hash
+              from search
+              where search_title = {}));
+              '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -397,9 +391,9 @@ class analyticsGUI(tk.Tk):
                     temp = jobExpNumbersList[2]
                     temp = temp + 1
                     jobExpNumbersList[2] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(jobExpNumbersList)
+        #print(jobExpNumbersList)
 
 
         objects = ('entry_level', 'mid_level', 'senior_level')
@@ -409,8 +403,7 @@ class analyticsGUI(tk.Tk):
         plt.xticks(y_pos, objects)
         plt.xlabel('Types of Experience')
         plt.ylabel('Level of Experience')
-        plt.title('job_exp Graph')
-
+        plt.title('{0} Job Experience Graph'.format(search_list))
 
         plt.show()
 
@@ -434,20 +427,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                      SELECT salary_est
-                      from listing
-                      where hash_val
-                      in
-                      (
-                      select hash_val
-                      from junction
-                      where search_hash
-                      in
-                      (
-                      select search_hash
-                      from search
-                      where search_title = {}));
-                      '''.format(search_list)
+              SELECT salary_est
+              from listing
+              where hash_val
+              in
+              (
+              select hash_val
+              from junction
+              where search_hash
+              in
+              (
+              select search_hash
+              from search
+              where search_title = {}));
+              '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -472,21 +465,22 @@ class analyticsGUI(tk.Tk):
                     temp = salaryEstNumbersList[2]
                     temp = temp + 1
                     salaryEstNumbersList[2] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(salaryEstNumbersList)
+        #print(salaryEstNumbersList)
 
         salary_est = ['$14,000','$30,000','$50,000','$70,000','$90,000']
 
         plt.pie(salaryEstNumbersList,
                 labels=salary_est,
-                # startangle=90,
+                #startangle=90,
                 shadow=True,
                 explode=(0, 0, 0, 0, 0),
                 autopct='%1.1f%%')
-        plt.title('salary-est Graph')
+        plt.title('{0} Salary Estimate Graph'.format(search_list))
         plt.legend()
         plt.show()
+
 
     def analyticsSalaryBarChart(self):
 
@@ -506,20 +500,20 @@ class analyticsGUI(tk.Tk):
 
         # Query
         query = '''
-                      SELECT salary_est
-                      from listing
-                      where hash_val
-                      in
-                      (
-                      select hash_val
-                      from junction
-                      where search_hash
-                      in
-                      (
-                      select search_hash
-                      from search
-                      where search_title = {}));
-                      '''.format(search_list)
+              SELECT salary_est
+              from listing
+              where hash_val
+              in
+              (
+              select hash_val
+              from junction
+              where search_hash
+              in
+              (
+              select search_hash
+              from search
+              where search_title = {}));
+              '''.format(search_list)
 
         for row in db_cursor.execute(query):
 
@@ -544,9 +538,9 @@ class analyticsGUI(tk.Tk):
                     temp = salaryEstNumbersList[2]
                     temp = temp + 1
                     salaryEstNumbersList[2] = temp
-                print(row[i])
+                #print(row[i])
 
-        print(salaryEstNumbersList)
+        #print(salaryEstNumbersList)
 
         objects = ('$14,000','$30,000','$50,000','$70,000','$90,000')
         y_pos = np.arange(len(objects))
@@ -555,7 +549,7 @@ class analyticsGUI(tk.Tk):
         plt.xticks(y_pos, objects)
         plt.xlabel('Salary Levels')
         plt.ylabel('Number of Positions')
-        plt.title('salary_est Graph')
+        plt.title('{0} Salary Estimate Graph'.format(search_list))
 
         plt.show()
 
