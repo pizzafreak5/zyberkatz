@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import ttk, StringVar, Label, BOTTOM, SUNKEN, W, X,S,E
+import tkinter.simpledialog
+import tkinter.messagebox
 import json
 import search_logic
 import sqlite3
 import analytic_charts
-
 
 aboutTxt = """
 Katz Attack Triple Threat Z'craper: (KATTZ)
@@ -144,6 +145,9 @@ class GUI(tk.Frame):
                 
         for search in self.searches:
             self.search_list.insert(tk.END, search)
+            
+        for search in self.custom_searches:
+            self.search_list.insert(tk.END, search)
         
         #Text
         tk.Label(root, text="Select a search or multiple searches").grid(row =4, column=0)
@@ -202,9 +206,6 @@ class GUI(tk.Frame):
         label2.pack()
         
     def new_search(self):
-
-
-
         #Get input
         job_title = self.job_title.get()
         location = self.location.get()
@@ -238,16 +239,30 @@ class GUI(tk.Frame):
     
     def load_settings(self):
         self.searches = []
+        self.custom_searches = {}
         try:
-            with open('kattz.settings.json') as settings:
+            with open('kattz.searches.json') as settings:
                 self.searches = json.load(settings)
         except:
-            print ("Failed to find file kattz.settings.json")
+            print ("Failed to find file kattz.searches.json\n")
+            
+        try:
+            with open('kattz.custom_searches.json') as custom_search:
+                self.custom_searches = json.load(custom_search)
+        except:
+            print("Failed to find file kattz.custom_searches.json\n")
             
     def update_settings(self):
-        with open('kattz.settings.json', 'w') as settings:
+        with open('kattz.searches.json', 'w') as settings:
             settings.seek(0)
             write_string = json.dumps(self.searches)
+            settings.write(write_string)
+            settings.truncate()
+            settings.close()
+            
+        with open('kattz.custom_searches.json', 'w') as settings:
+            settings.seek(0)
+            write_string = json.dumps(self.custom_searches)
             settings.write(write_string)
             settings.truncate()
             settings.close()
@@ -311,7 +326,6 @@ class GUI(tk.Frame):
             
         #Grab the search text value
         search_term = self.input_text_search.get()
-        search_term = search_term.lower()
         
         if search_term != ""and not self.field_selected:
             self.output_to_search_text("No field to search for " + search_term)
@@ -321,52 +335,9 @@ class GUI(tk.Frame):
         db = sqlite3.connect(db_name)
         db_cursor = db.cursor()
         
-        #Prep to find the searches
-        search_list = "'"
-        #For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(self.selected) 
-        search_list += "'"
-        
-        #Prep to search the appropriate fields
-        fields = ("company", "time_posted", "job_title", "job_desc", "job_loc", 
-                      "job_exp", "salary_est", "job_type", "link", "job_text")
-        
-        selected_fields = []            #have to reconstruct with database names
-        for i in self.field_selection:  #From user seen names
-            selected_fields.append(fields[i])
-        
-        field_string = ""
-        for i in range(len(selected_fields)):
-            if len(selected_fields) == 1:
-                field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
-            else:
-                if (len(selected_fields)-1 != i):
-                    field_string += "lower({}) LIKE '%{}%' or ".format(selected_fields[i], search_term)
-                else:
-                    field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
-                        
-        #Query
-        query = '''
-        SELECT *
-        from listing
-        where hash_val
-        in
-        (
-        select hash_val
-        from junction
-        where search_hash
-        in
-        (
-        select search_hash
-        from search
-        where search_title = {}))
-        '''.format(search_list)
-        
-        if search_term != "":
-            query += "AND (" + field_string + ")"
-        
-        query += ";"
-        
+        query = self.create_search_query(self.searches, self.custom_searches, self.selected, self.field_selection, search_term)
+        print (query)
+                
         results = ""
         stop_writing = False
         result_count = 0
@@ -382,35 +353,36 @@ class GUI(tk.Frame):
         
         results = "Total results:" + str(result_count) + "\n\n" + results
         self.output_to_search_text(str.encode(results), True)
+        return query
     
     def search_save(self):
-        #Identical to search_text
-        #There is no searches selected
-        if not self.selected:
-            self.output_to_search_text("No search has been selected to be used", clear = True)
-            return
+        query = self.search_text()
+        print (query)
+        
+        search_name = tkinter.simpledialog.askstring("Save search as", "Please enter a search name for this search")
+        
+        #Error checking
+        if search_name in self.searches or search_name == '' or search_name in self.custom_searches:
+            #Error conflicts with an existing search name
+            error = "'" + search_name + "'" + " is either already used as a search name or is an invalid search name"
+            tkinter.messagebox.showerror("Invalid search name", error)
+            return                      #Couldnt save
             
-        #Grab the search text value
-        search_term = self.input_text_search.get()
-        search_term = search_term.lower()
-        
-        if search_term != ""and not self.field_selected:
-            self.output_to_search_text("No field to search for " + search_term)
-            return
-        
-        #Prep to find the searches
-        search_list = "'"
-        #For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(self.selected) 
-        search_list += "'"
-        
-        #Prep to search the appropriate fields
+        #Add to the selection listbox
+        self.search_list.insert(tk.END, search_name)
+        self.update_idletasks()
+        #Add to saved_searches
+        self.custom_searches[search_name] = query
+        #Populate saved information
+        self.update_settings()
+    
+    def prepare_search_text_statement(self, field_selection, search_term):
         fields = ("company", "time_posted", "job_title", "job_desc", "job_loc", 
                       "job_exp", "salary_est", "job_type", "link", "job_text")
-        
         selected_fields = []            #have to reconstruct with database names
-        for i in self.field_selection:  #From user seen names
-            selected_fields.append(fields[i])
+        
+        for i in field_selection:       #From user selected names
+            selected_fields.append(fields[i])        
         
         field_string = ""
         for i in range(len(selected_fields)):
@@ -421,10 +393,87 @@ class GUI(tk.Frame):
                     field_string += "lower({}) LIKE '%{}%' or ".format(selected_fields[i], search_term)
                 else:
                     field_string += "lower({}) LIKE '%{}%'".format(selected_fields[i], search_term)
+        
+        return field_string
+
+    def output_to_search_text(self, message, clear = False):
+        self.search_text_output.config(state=tk.NORMAL)     #Allow text writing to box
+        if (clear == True):                                 #Clear box?
+            self.search_text_output.delete('1.0', tk.END)   #Clear box
+        self.search_text_output.insert(tk.END, message)     #Write from bottom down
+        self.search_text_output.config(state=tk.DISABLED)   #Prevent more writing
+        
+    def create_search_query(self, searches, custom_searches, selected_searches, selected_fields, search_text, SELECT = '*'):
+        #Split selected into searches and custom searches
+        
+        search_text = search_text.lower()
+        from_search = []
+        from_custom_search = {}
+        
+        for term in selected_searches:
+            if term in searches:
+                from_search.append(term)
+            elif term in custom_searches:
+                from_custom_search[term] = custom_searches[term]
+        
+        query = ""
+        if from_custom_search:  #There is a saved search selected
+            if len(from_custom_search) > 1:
+                #Multiple custom searches selected
+                query += "("
+                count = 0
+                for key in from_custom_search:
+                    partial_query = from_custom_search[key]
+                    #the query that is appended has a semicolon at the end
+                    if partial_query.endswith(";"):
+                        partial_query = partial_query[:-1] #remove the ;
+                    
+                    #Last value
+                    if (count == len(from_custom_search) - 1):
+                        query += partial_query
                         
-        #Query
+                    else:
+                        query += " OR " + partial_query
+                query += ")"
+            else:
+                #Single custom search selected
+                for key in from_custom_search:
+                    partial_query = from_custom_search[key]
+                    #the query that is appended has a semicolon at the end
+                    if partial_query.endswith(";"):
+                        partial_query = partial_query[:-1] #remove the ;
+                    query += partial_query
+                                    
+        
+        if from_search:             #There is something selected that is from an original search
+            #query selects all the real searches    
+            if query == "":
+                query = self.create_search_query_from_searches(from_search, SELECT)
+            else:
+                query += " OR " + self.create_search_query_from_searches(from_search, SELECT)
+                
+            if from_custom_search:
+                query = "(" + query + ")"
+            
+        if search_text != "":
+            query += "AND (" + self.prepare_search_text_statement(selected_fields, 
+                                            search_text) + ")"
+        if query.endswith(";") == False:
+            query += ";"
+        
+        return query
+        
+    def create_search_query_from_searches(self, searches, SELECT = '*'):
+        
+        #Prep to find the searches
+        search_list = "'"
+        #For singular it is done inside the query string itself
+        search_list += "' or search_title = '".join(searches) 
+        search_list += "'"
+        
+        #Query to grab all searches based on the name(s) in searches
         query = '''
-        SELECT *
+        SELECT {}
         from listing
         where hash_val
         in
@@ -437,24 +486,9 @@ class GUI(tk.Frame):
         select search_hash
         from search
         where search_title = {}))
-        '''.format(search_list)
+        '''.format(SELECT, search_list)
         
-        if search_term != "":
-            query += "AND (" + field_string + ")"
-        
-        query += ";"
-        
-
-    def output_to_search_text(self, message, clear = False):
-        self.search_text_output.config(state=tk.NORMAL)     #Allow text writing to box
-        if (clear == True):                                 #Clear box?
-            self.search_text_output.delete('1.0', tk.END)   #Clear box
-        self.search_text_output.insert(tk.END, message)     #Write from bottom down
-        self.search_text_output.config(state=tk.DISABLED)   #Prevent more writing
-        
-
-
-
+        return query
 	 
 app = GUI()
 app.mainloop()
