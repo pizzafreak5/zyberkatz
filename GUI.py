@@ -6,6 +6,7 @@ import json
 import search_logic
 import sqlite3
 import analytics_gui
+import threading
 
 aboutTxt = """
 Katz Attack Triple Threat Z'craper: (KATTZ)
@@ -51,6 +52,8 @@ class GUI(tk.Frame):
         root.iconbitmap('sideprofileCat.ico')
         root.wm_title("KATTZraper")
 
+        self.isRunning = False  # Multi-threading flag
+
         self.selected = []
         self.field_selected = []
         
@@ -79,7 +82,7 @@ class GUI(tk.Frame):
 
 
         # ****** Bottom Status Bar *******
-        self.message = ""  # Awaiting your command!
+        self.message = "Awaiting your command!"
         self.statusText = StringVar()
         self.statusText.set(self.message)
         self.status = Label(root, textvariable=self.statusText, bd=1,
@@ -128,7 +131,7 @@ class GUI(tk.Frame):
         self.search_name.grid(row=2, column =1)
         
         #search button
-        self.search_button = tk.Button(root, text="Search Indeed.com", font= search_button_font, command=self.new_search).grid(row=3, column=0, columnspan=2)        
+        self.search_button = tk.Button(root, text="Search Indeed.com", font= search_button_font, command=self.play).grid(row=3, column=0, columnspan=2)
         
         #Error output
         #self.error_search_output = tk.Label(root, text=self.error_search).grid(row=4, column=0)
@@ -187,9 +190,8 @@ class GUI(tk.Frame):
         print("export")
         
     def analytics(self):
-        print("analytics")
         searchJobTitle = self.selected
-        tmp = analytic_gui.analyticsGUI(searchJobTitle)
+        tmp = analytics_gui.analyticsGUI(searchJobTitle)
 
     def about(self):
         # About option from drop down window
@@ -200,39 +202,89 @@ class GUI(tk.Frame):
         label1.pack()
         label2 = tk.Label(toplevel, text=disclaimer, height=0, width=60)
         label2.pack()
-        
+
+    def play(self):
+
+        self.updateStatus("Please wait, scanning Indeed.com...")
+
+        try:
+            # Get input
+            job_title = self.job_title.get()
+            location = self.location.get()
+            search_title = self.search_name.get()
+
+            if search_title == "":
+                error = "Error: a search has to have a non-empty name"
+                self.updateStatus("Error: a search has to have a non-empty name")
+                self.error_search = error
+                return
+
+            # Verify uniqueness of search title
+            if search_title in self.searches:
+                error = "Error: there already exists a search with the name" + search_title
+                self.updateStatus("Error: there already exists a search with the name" + search_title)
+                self.error_search = error
+                return
+            if self.isRunning != True:  # Blocks user from initiating multiple searches
+                if self.isRunning == False:
+                    self.isRunning = True
+                    self.scanThread = threading.Thread(target=self.new_search)
+                    self.scanThread.start()
+                else:
+                    self.isRunning = False
+                    self.updateStatus("Bad input...")
+                    self.stop()
+        except ValueError:
+            self.isRunning = False
+            self.stop()
+
     def new_search(self):
-        #Get input
-        job_title = self.job_title.get()
-        location = self.location.get()
-        search_title = self.search_name.get()
+        try:
+            # Get input
+            job_title = self.job_title.get()
+            location = self.location.get()
+            search_title = self.search_name.get()
 
-        if search_title == "":
-            error = "Error: a search has to have a non-empty name"
-            self.updateStatus("Error: a search has to have a non-empty name")
-            self.error_search = error
-            return
-        
-        #Verify uniqueness of search title
-        if search_title in self.searches:
-            error = "Error: there already exists a search with the name" + search_title
-            self.updateStatus("Error: there already exists a search with the name" + search_title)
-            self.error_search = error
-            return
-        
-        #Add it to searches
-        self.searches.append(search_title)
-        
-        #Do a search
-        search_logic.run_search(job_title, location, search_title)
+            # Add it to searches
+            self.searches.append(search_title)
 
-        #Update the results so that the search is visible
-        self.search_list.insert(tk.END, search_title)
-        self.update_settings()
-        self.update_idletasks()
+            # Do a search
+            search_logic.run_search(job_title, location, search_title)
 
-        self.updateStatus("Completed scanning Indeed.com...")
-    
+            # Update the results so that the search is visible
+            self.search_list.insert(tk.END, search_title)
+            self.update_settings()
+            self.update_idletasks()
+
+            if self.isRunning == True:
+                self.updateStatus("Completed scanning Indeed.com...")
+                try:
+                    # Stops the extra thread we used to scan
+                    self.isRunning = False
+                    self.scanThread.join(0)
+                    self.scanThread = None
+                except (AttributeError, RuntimeError):  # Scan thread could be None
+                    pass
+        except AttributeError:
+            self.updateStatus("Hostname could not be resolved. Stopping...")
+        except RuntimeError:
+            self.updateStatus("Couldn't connect to server")
+
+    def stop(self):
+
+        # If user wants to Interrupt the ongoing scan
+        if self.isRunning != False:
+            self.updateStatus("Operation Stopped...")
+
+        try:
+            # Stops the extra thread we used to scan
+            self.isRunning = False
+            self.scanThread.join(0)
+            self.scanThread = None
+
+        except (AttributeError, RuntimeError):  # Scan thread could be None
+            pass
+
     def load_settings(self):
         self.searches = []
         self.custom_searches = {}
