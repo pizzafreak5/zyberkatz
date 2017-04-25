@@ -184,6 +184,7 @@ class GUI(tk.Frame):
             self.selected.append(widget.get(term))   #Create a list of values selected
 
     def delete_selected_searches(self):
+        
         print("delete selected searches")
     
     def import_info(self):
@@ -194,8 +195,24 @@ class GUI(tk.Frame):
         
     def analytics(self):
         searchJobTitle = self.selected
+        query_job = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "job_type")
+        query_exp = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "job_exp")
+        query_salary = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "salary_est")
+        
+        #Remove this
+        db = sqlite3.connect(db_name)
+        db_cursor = db.cursor()
+        for row in db_cursor.execute(query_job):
+            print(row, end = ":::")
+        
+        for row in db_cursor.execute(query_exp):
+            print(row, end = ":::")
+            
+        for row in db_cursor.execute(query_salary):
+            print(row, end = ":::")
+                
         tmp = analytics_gui.analyticsGUI(searchJobTitle)
-
+        
     def about(self):
         # About option from drop down window
         # Opens new window to display About message and Disclaimer
@@ -387,7 +404,6 @@ class GUI(tk.Frame):
         db_cursor = db.cursor()
         
         query = self.create_search_query(self.searches, self.custom_searches, self.selected, self.field_selection, search_term)
-        print (query)
                 
         results = ""
         stop_writing = False
@@ -497,8 +513,6 @@ class GUI(tk.Frame):
                 and_query = " AND (" + self.prepare_search_text_statement(selected_fields, search_text) + ")"
                 query += and_query
 
-            print ("\nquery\n" + query + "\n***************")    
-
             query += ";"
             return query
             
@@ -507,7 +521,6 @@ class GUI(tk.Frame):
             query = self.create_search_query_from_searches(from_search , SELECT)
             if search_text != "":   #there is a text search
                 query += " AND (" + self.prepare_search_text_statement(selected_fields, search_text) + ");"
-            print (query)
             return query
         
     def create_search_query_from_searches(self, searches, SELECT = '*'):
@@ -636,5 +649,5 @@ class GUI(tk.Frame):
         
         
 app = GUI()
-app.sql_test()
+#app.sql_test()
 app.mainloop()
