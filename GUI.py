@@ -139,8 +139,6 @@ class GUI(tk.Frame):
         #Error output
         #self.error_search_output = tk.Label(root, text=self.error_search).grid(row=4, column=0)
 
-
-
     def updateStatus(self, textVar):
         self.statusText.set(textVar)
 
@@ -184,8 +182,33 @@ class GUI(tk.Frame):
             self.selected.append(widget.get(term))   #Create a list of values selected
 
     def delete_selected_searches(self):
+        from_search = []
+        from_custom_search = {}
         
-        print("delete selected searches")
+        for term in self.selected:
+            if term in self.searches:
+                from_search.append(term)
+            elif term in self.custom_searches:
+                from_custom_search[term] = self.custom_searches[term]
+
+        
+        for search in from_search:
+            sql_code_to_drop = '''
+            DROP LOL
+            '''
+            
+        for search in from_custom_search:
+            self.custom_searches.pop(search, None)
+        
+        self.search_list.delete(0, tk.END)
+        for search in self.searches:
+            self.search_list.insert(tk.END, search)
+            
+        for search in self.custom_searches:
+            self.search_list.insert(tk.END, search)
+            
+        self.update_idletasks()     #Update the gui
+        self.update_settings()      #update the settings
     
     def import_info(self):
         print("imports")
