@@ -97,6 +97,7 @@ class SimpleTable(tk.Frame):
 
         #tk.Frame.__init__(self, parent, background="grey")
         parent.title("Search Results")
+        parent.iconbitmap('sideprofileCat.ico')
         #parent.resizable(width=False, height=False)  # Makes user unable to resize window
 
         self._widgets = []

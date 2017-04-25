@@ -17,6 +17,7 @@ BUTTON_FONT = ("arial", 14)
 import analytics_chart
 
 global_db_name = 'zyber.db'
+
 rowNumber = 1
 row_info = ['Company',
             'Job title',
@@ -31,10 +32,12 @@ class analyticsGUI(tk.Tk):
 
 
 
+
     def analyticsPage(self):
 
         self.analyticsWindow = tk.Toplevel(background = 'grey')
         self.analyticsWindow.wm_title("Analytics")
+        self.analyticsWindow.iconbitmap('sideprofileCat.ico')
         self.analyticsWindow.wm_geometry("300x200")
         #self.analyticsWindow.resizable(0, 0)
 
@@ -43,7 +46,7 @@ class analyticsGUI(tk.Tk):
 
         # ****** Top Button Toolbar ********
         self.resultsButton = Button(self.toolbar, text="Results Chart", command=self.goResultsChart,
-                                    highlightbackground='grey', height=1, width =20).grid(row=0, column=2,  pady=2)
+                                    highlightbackground='grey', height=1, width =20).grid(row=0, column=2,  pady=10)
 
 
         self.toolbar.pack(side=TOP, fill=Y)  # Adds toolbar to frame
@@ -62,7 +65,7 @@ class analyticsGUI(tk.Tk):
                             variable=self.salaryEstRadio, value=2).grid(row=2, column=2, sticky=W)
 
         goButton01 = Button(self.frame, text="Go", highlightbackground='green', width=5,
-                            command=self.selectedSalaryEstGo).grid(row=1, column=3)
+                            command=self.selectedSalaryEstGo).grid(row=1, column=3,  pady=5)
 
 
         self.jobExp = Label(self.frame, text="Job Experience:", background = 'grey').grid(row=3, column=1)
@@ -72,7 +75,7 @@ class analyticsGUI(tk.Tk):
                             variable=self.jobExpRadio, value=4).grid(row=4, column=2, sticky=W)
 
         goButton02 = Button(self.frame, text="Go", highlightbackground='green', width =5,
-                            command=self.selectedJobExpGo).grid(row=3, column=3)
+                            command=self.selectedJobExpGo).grid(row=3, column=3,  pady=5)
 
         self.jobType = Label(self.frame, text="Job Type:", background = 'grey').grid(row=5, column=1)
         pie03 = Radiobutton(self.frame, text="Pie Chart", background = 'grey',
@@ -81,7 +84,7 @@ class analyticsGUI(tk.Tk):
                             variable=self.jobTitleRadio, value=6).grid(row=6, column=2, sticky=W)
 
         goButton03 = Button(self.frame, text="Go", highlightbackground='green', width =5,
-                            command=self.selectedJobTypeGo).grid(row=5, column=3)
+                            command=self.selectedJobTypeGo).grid(row=5, column=3,  pady=5)
 
         self.frame.pack()
 
