@@ -484,23 +484,30 @@ class GUI(tk.Frame):
             
             if from_search: #there is also a normal search
                 sub_query = self.create_search_query_from_searches(from_search, SELECT)
-                
-                if search_text != "":
-                    and_query = "(" + self.prepare_search_text_statement(selected_fields, search_text) + ")"
-                print ("query\n" + query + "\n***************")    
-                print ("\n\nSub Query\n" + sub_query + "\n******************") 
-                
-                query += ";"
-                return query
-            else:
-                query += ";"
-                return query
+                query += " UNION " + sub_query 
+                        
+            qstring = '''
+            SELECT {} FROM listing
+            WHERE hash_val IN ({})
+            '''
+            query = query.replace("SELECT *", "SELECT hash_val")
+            query = qstring.format(SELECT, query)
+            
+            if search_text != "":
+                and_query = " AND (" + self.prepare_search_text_statement(selected_fields, search_text) + ")"
+                query += and_query
+
+            print ("\nquery\n" + query + "\n***************")    
+
+            query += ";"
+            return query
             
         #no custom search, normal search only
         elif from_search: 
             query = self.create_search_query_from_searches(from_search , SELECT)
             if search_text != "":   #there is a text search
                 query += " AND (" + self.prepare_search_text_statement(selected_fields, search_text) + ");"
+            print (query)
             return query
         
     def create_search_query_from_searches(self, searches, SELECT = '*'):
