@@ -44,7 +44,7 @@ root = tk.Tk()
 db_name = 'zyber.db'
 
 
-search_button_font = ("arial", 12)
+search_button_font = ("arial", 20)
 
 class GUI(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -115,7 +115,7 @@ class GUI(tk.Frame):
         global search_button_font
 
         #job title
-        tk.Label(root, background='light grey',text="Job Title:").grid(row=0, column=0, sticky = W+E)
+        tk.Label(root, background='light grey',text="Job Title:").grid(row=0, column=0, sticky = W+E,  pady=10)
         #Input
         self.job_title = tk.Entry(root)
         self.job_title.grid(row=0, column=1)
@@ -127,14 +127,14 @@ class GUI(tk.Frame):
         self.location.grid(row=1, column =1)
         
         #Search title
-        tk.Label(root, background='light grey', text="Search Name:").grid(row=2, column=0)
+        tk.Label(root, background='light grey', text="Search Name:").grid(row=2, column=0,  pady=10)
         #Input
         self.search_name = tk.Entry(root)
         self.search_name.grid(row=2, column =1)
         
         #search button
         self.search_button = tk.Button(root,highlightbackground='light grey', text="Search Indeed.com",
-                                       font= search_button_font, command=self.play).grid(row=3, column=0, columnspan=2, sticky = W+E,  pady=60)
+                                       font= search_button_font, command=self.play).grid(row=3, column=0, columnspan=2, sticky = W+E,  pady=30)
         
         #Error output
         #self.error_search_output = tk.Label(root, text=self.error_search).grid(row=4, column=0)

@@ -43,7 +43,7 @@ class analyticsGUI(tk.Tk):
 
         # ****** Top Button Toolbar ********
         self.resultsButton = Button(self.toolbar, text="Results Chart", command=self.goResultsChart,
-                                    highlightbackground='grey', height=1, width =20).grid(row=0, column=2)
+                                    highlightbackground='grey', height=1, width =20).grid(row=0, column=2,  pady=2)
 
 
         self.toolbar.pack(side=TOP, fill=Y)  # Adds toolbar to frame
@@ -57,9 +57,9 @@ class analyticsGUI(tk.Tk):
 
         self.salaryEst = Label(self.frame, text="Salary Estimates:", background='grey').grid(row=1, column=1)
         pie01 = Radiobutton(self.frame, text="Pie Chart", background='grey',
-                            variable=self.salaryEstRadio, value=1).grid(row=1, column=2)
+                            variable=self.salaryEstRadio, value=1).grid(row=1, column=2, sticky=W)
         bar01 = Radiobutton(self.frame, text="Bar Graph", background='grey',
-                            variable=self.salaryEstRadio, value=2).grid(row=2, column=2)
+                            variable=self.salaryEstRadio, value=2).grid(row=2, column=2, sticky=W)
 
         goButton01 = Button(self.frame, text="Go", highlightbackground='green', width=5,
                             command=self.selectedSalaryEstGo).grid(row=1, column=3)
@@ -67,18 +67,18 @@ class analyticsGUI(tk.Tk):
 
         self.jobExp = Label(self.frame, text="Job Experience:", background = 'grey').grid(row=3, column=1)
         pie02 = Radiobutton(self.frame, text="Pie Chart", background = 'grey',
-                            variable=self.jobExpRadio, value=3).grid(row=3, column=2)
+                            variable=self.jobExpRadio, value=3).grid(row=3, column=2, sticky=W)
         bar02 = Radiobutton(self.frame, text="Bar Graph", background = 'grey',
-                            variable=self.jobExpRadio, value=4).grid(row=4, column=2)
+                            variable=self.jobExpRadio, value=4).grid(row=4, column=2, sticky=W)
 
         goButton02 = Button(self.frame, text="Go", highlightbackground='green', width =5,
                             command=self.selectedJobExpGo).grid(row=3, column=3)
 
         self.jobType = Label(self.frame, text="Job Type:", background = 'grey').grid(row=5, column=1)
         pie03 = Radiobutton(self.frame, text="Pie Chart", background = 'grey',
-                            variable=self.jobTitleRadio, value=5).grid(row=5, column=2)
+                            variable=self.jobTitleRadio, value=5).grid(row=5, column=2, sticky=W)
         bar03 = Radiobutton(self.frame, text="Bar Graph", background = 'grey',
-                            variable=self.jobTitleRadio, value=6).grid(row=6, column=2)
+                            variable=self.jobTitleRadio, value=6).grid(row=6, column=2, sticky=W)
 
         goButton03 = Button(self.frame, text="Go", highlightbackground='green', width =5,
                             command=self.selectedJobTypeGo).grid(row=5, column=3)
