@@ -8,6 +8,7 @@ import sqlite3
 import analytics_gui
 import threading
 
+
 aboutTxt = """
 Katz Attack Triple Threat Z'craper: (KATTZ)
 Licensed 2017, March 25th.
@@ -132,7 +133,8 @@ class GUI(tk.Frame):
         self.search_name.grid(row=2, column =1)
         
         #search button
-        self.search_button = tk.Button(root,highlightbackground='light grey', text="Search Indeed.com", font= search_button_font, command=self.play).grid(row=3, column=0, columnspan=2, sticky = W+E)
+        self.search_button = tk.Button(root,highlightbackground='light grey', text="Search Indeed.com",
+                                       font= search_button_font, command=self.play).grid(row=3, column=0, columnspan=2, sticky = W+E,  pady=60)
         
         #Error output
         #self.error_search_output = tk.Label(root, text=self.error_search).grid(row=4, column=0)
