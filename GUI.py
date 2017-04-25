@@ -117,19 +117,19 @@ class GUI(tk.Frame):
         #job title
         tk.Label(root, background='light grey',text="Job Title:").grid(row=0, column=0, sticky = W+E,  pady=10)
         #Input
-        self.job_title = tk.Entry(root)
+        self.job_title = tk.Entry(root, highlightbackground='light grey')
         self.job_title.grid(row=0, column=1)
         
         #Location
         tk.Label(root, background='light grey',text="Location:").grid(row=1, column=0, sticky = W+E)
         #Input
-        self.location = tk.Entry(root)
+        self.location = tk.Entry(root, highlightbackground='light grey')
         self.location.grid(row=1, column =1)
         
         #Search title
         tk.Label(root, background='light grey', text="Search Name:").grid(row=2, column=0,  pady=10)
         #Input
-        self.search_name = tk.Entry(root)
+        self.search_name = tk.Entry(root, highlightbackground='light grey')
         self.search_name.grid(row=2, column =1)
         
         #search button
