@@ -159,7 +159,7 @@ class GUI(tk.Frame):
         tk.Label(root, background='light grey',text="Select a Single Search or Multiple Searches").grid(row =4, column=0)
         
         #Selection    
-        self.search_list.grid(row=5, column=0)
+        self.search_list.grid(row=5, column=0, sticky= W+E)
         self.search_list.bind("<<ListboxSelect>>", self.update_search_selection)
         
         #Search The Searches
