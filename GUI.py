@@ -114,25 +114,25 @@ class GUI(tk.Frame):
         global search_button_font
 
         #job title
-        tk.Label(root, text="Job Title").grid(row=0, column=0)
+        tk.Label(root, background='light grey',text="Job Title:").grid(row=0, column=0, sticky = W+E)
         #Input
         self.job_title = tk.Entry(root)
         self.job_title.grid(row=0, column=1)
         
         #Location
-        tk.Label(root, text="Location").grid(row=1, column=0)
+        tk.Label(root, background='light grey',text="Location:").grid(row=1, column=0, sticky = W+E)
         #Input
         self.location = tk.Entry(root)
         self.location.grid(row=1, column =1)
         
         #Search title
-        tk.Label(root, text="Search Name").grid(row=2, column=0)
+        tk.Label(root, background='light grey', text="Search Name:").grid(row=2, column=0)
         #Input
         self.search_name = tk.Entry(root)
         self.search_name.grid(row=2, column =1)
         
         #search button
-        self.search_button = tk.Button(root, text="Search Indeed.com", font= search_button_font, command=self.play).grid(row=3, column=0, columnspan=2)
+        self.search_button = tk.Button(root,highlightbackground='light grey', text="Search Indeed.com", font= search_button_font, command=self.play).grid(row=3, column=0, columnspan=2, sticky = W+E)
         
         #Error output
         #self.error_search_output = tk.Label(root, text=self.error_search).grid(row=4, column=0)
@@ -154,22 +154,22 @@ class GUI(tk.Frame):
             self.search_list.insert(tk.END, search)
         
         #Text
-        tk.Label(root, text="Select a search or multiple searches").grid(row =4, column=0)
+        tk.Label(root, background='light grey',text="Select a Single Search or Multiple Searches").grid(row =4, column=0)
         
         #Selection    
         self.search_list.grid(row=5, column=0)
         self.search_list.bind("<<ListboxSelect>>", self.update_search_selection)
         
         #Search The Searches
-        self.search_selected_button = tk.Button(root, text="Create a new Search from the above",
+        self.search_selected_button = tk.Button(root, highlightbackground='grey',text="Create a new Search from the above",
                             command=self.search_selection).grid(row=6, column=0, sticky=tk.W + tk.E)        
 
         #Text for analytics
-        self.analytics_button = tk.Button(root, text="Analytics", 
+        self.analytics_button = tk.Button(root, highlightbackground='grey',text="Analytics",
                             command=self.analytics).grid(row=7, column=0, sticky=tk.W + tk.E)
         
         #Text for delete search
-        self.search_delete_button = tk.Button(root, text="Delete Selected Entries",
+        self.search_delete_button = tk.Button(root, highlightbackground='grey',text="Delete Selected Entries",
                                               command=self.delete_selected_searches).grid(row=8, column=0, sticky= tk.W + tk.E)
         
     def update_search_selection(self, event):
