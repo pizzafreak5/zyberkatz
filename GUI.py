@@ -113,10 +113,6 @@ class GUI(tk.Frame):
     def create_search(self, root):
         global search_button_font
 
-
-        image = PhotoImage(file="egypycat.jpg")
-        tk.Label(root, image =image).grid(row=0,column=1)
-
         #job title
         tk.Label(root, text="Job Title").grid(row=0, column=0)
         #Input
