@@ -468,51 +468,40 @@ class GUI(tk.Frame):
                 from_custom_search[term] = custom_searches[term]
         
         query = ""
-        if from_custom_search:  #There is a saved search selected
-            if len(from_custom_search) > 1:
-                #Multiple custom searches selected
-                query += "("
-                count = 0
-                for key in from_custom_search:
-                    partial_query = from_custom_search[key]
-                    #the query that is appended has a semicolon at the end
-                    if partial_query.endswith(";"):
-                        partial_query = partial_query[:-1] #remove the ;
-                    
-                    #Last value
-                    if (count == len(from_custom_search) - 1):
-                        query += partial_query
-                        
-                    else:
-                        query += " OR " + partial_query
-                query += ")"
-            else:
-                #Single custom search selected
-                for key in from_custom_search:
-                    partial_query = from_custom_search[key]
-                    #the query that is appended has a semicolon at the end
-                    if partial_query.endswith(";"):
-                        partial_query = partial_query[:-1] #remove the ;
-                    query += partial_query
-                                    
         
-        if from_search:             #There is something selected that is from an original search
-            #query selects all the real searches    
-            if query == "":
-                query = self.create_search_query_from_searches(from_search, SELECT)
-            else:
-                query += " OR " + self.create_search_query_from_searches(from_search, SELECT)
+        if from_custom_search:
+            for key in from_custom_search:
+                partial_query = from_custom_search[key]
                 
-            if from_custom_search:
-                query = "(" + query + ")"
+                #Get rid of semicolon at the end
+                if partial_query.endswith(";"):
+                    partial_query = partial_query[:-1]
+                
+                if query == "":             #1st value from_custom_search
+                    query += partial_query
+                else:                       #2nd+ value from_custom_search
+                    query += " UNION " + partial_query
             
-        if search_text != "":
-            query += "AND (" + self.prepare_search_text_statement(selected_fields, 
-                                            search_text) + ")"
-        if query.endswith(";") == False:
-            query += ";"
-        
-        return query
+            if from_search: #there is also a normal search
+                sub_query = self.create_search_query_from_searches(from_search, SELECT)
+                
+                if search_text != "":
+                    and_query = "(" + self.prepare_search_text_statement(selected_fields, search_text) + ")"
+                print ("query\n" + query + "\n***************")    
+                print ("\n\nSub Query\n" + sub_query + "\n******************") 
+                
+                query += ";"
+                return query
+            else:
+                query += ";"
+                return query
+            
+        #no custom search, normal search only
+        elif from_search: 
+            query = self.create_search_query_from_searches(from_search , SELECT)
+            if search_text != "":   #there is a text search
+                query += " AND (" + self.prepare_search_text_statement(selected_fields, search_text) + ");"
+            return query
         
     def create_search_query_from_searches(self, searches, SELECT = '*'):
         
@@ -540,6 +529,105 @@ class GUI(tk.Frame):
         '''.format(SELECT, search_list)
         
         return query
-	 
+        
+    def sql_test(self):
+        db = sqlite3.connect(db_name)
+        db_cursor = db.cursor()
+        
+        self.load_settings()
+        self.custom_searches = {}
+        
+
+        search_term = "coffee"
+        search_term = ""
+        #   TEST 1
+        #   Check to see if all the normal searches work like they should and then query all of them
+        for search in self.searches:
+            row_count =  0
+            selected = []
+            selected.append(search)
+            query = self.create_search_query(self.searches, self.custom_searches, selected, "", search_term)
+                                            #all searches, all custom searches, selected searches, selected fields, search term
+            for row in db_cursor.execute(query):
+                row_count += 1
+            
+            print ("search:", search, "\trows:", row_count)
+        query = self.create_search_query(self.searches, self.custom_searches, self.searches, "", search_term)
+        row_count = 0
+        for row in db_cursor.execute(query):
+            row_count +=1
+        print ("search:", self.searches, "\trows:", row_count)  #Expect 84
+        
+        #   TEST 2
+        #   Create a custom search from normal searches
+        search_name = "test2"
+        search_term = "coffee"
+        selected_fields = (3,)
+        print ("search:", search_name, "\t\tterm:", search_term, end="\t")
+        query = self.create_search_query(self.searches, self.custom_searches, self.searches, selected_fields, search_term)
+        self.custom_searches[search_name] = query
+        row_count = 0
+        for row in db_cursor.execute(query):
+            row_count += 1
+        print ("rows:", row_count) #expect 25
+        
+        #   TEST 3
+        #   create a custom search from a custom search
+        search_name = "test3"
+        search_term = "shop"
+        selected_fields = (3,)
+        print ("search:", search_name, "\t\tterm:", search_term, end="\t")
+        query = self.create_search_query(self.searches, self.custom_searches, self.custom_searches, selected_fields, search_term)
+        self.custom_searches[search_name] = query
+        row_count = 0
+        for row in db_cursor.execute(query):
+            row_count +=1
+        print ("rows:", row_count) #Expect 6
+        
+        #   TEST 4
+        #   create a custom search from 2 custom searches
+        search_name = "test4"
+        search_term = "resume"
+        selected_fields = (3,)
+        print ("search:", search_name, "\t\tterm:", search_term, end="\t")
+        if (len(self.custom_searches) != 2):
+            print ("EXPECTED 2 CUSTOM SEARCHES TO EXIST")
+        query = self.create_search_query(self.searches, self.custom_searches, self.custom_searches, selected_fields, search_term)
+        self.custom_searches[search_name] = query
+        row_count = 0
+        for row in db_cursor.execute(query):
+            row_count +=1
+        print ("rows:", row_count)
+        
+        #   TEST 5
+        #   Create a custom search from 2 custom searches and 2 normal searches
+        search_name = "test5"
+        search_term = "focus"
+        selected_fields = (3,)
+        print ("search:", search_name, "\t\tterm:", search_term, end="\t")
+        selected = ['test4', 'test3']
+        for i in range(len(self.searches)):
+            selected.append(self.searches[i])
+            if i == 1:
+                break
+        query = self.create_search_query(self.searches, self.custom_searches, selected, selected_fields, search_term)
+        self.custom_searches[search_name] = query
+        row_count = 0
+        for row in db_cursor.execute(query):
+            row_count +=1
+        print ("rows:", row_count)
+        
+        with open('test.json', 'w') as settings:
+            settings.seek(0)
+            write_string = json.dumps(self.custom_searches)
+            settings.write(write_string)
+            settings.truncate()
+            settings.close()
+        
+        #Remove all custom searches done for the tests
+        self.load_settings()
+        
+        
 app = GUI()
+app.sql_test()
 app.mainloop()
