@@ -154,6 +154,15 @@ class scraper:
                     job_desc = (job_desc.text).lower()
                 else:
                     job_desc = ""
+                    
+                #used for key
+                hash_val = hashlib.sha256((job_title+job_desc).encode('utf-8')).hexdigest()
+                
+                #Check for Redudant Entries
+                query = 'SELECT * FROM ' + self.table + ' WHERE hash_val=?'
+                self.cursor.execute(query, (hash_val,) )
+                if self.cursor.fetchone() != None:
+                    return                                  #DUPLICATE ENTRY
                 
                 job_link = str(listing.find('a')['href'])
                 job_link = self.domain + job_link
@@ -179,15 +188,6 @@ class scraper:
                 [terms.extract() for terms in job_listing(['style', 'script', '[document]', 'head', 'title'])]
                 job_listing_str = job_listing.getText()
                 job_listing_str = (re.sub('\s+', ' ', job_listing_str).strip()).lower()
-                                
-                #used for key
-                hash_val = hashlib.sha256((job_title+job_desc).encode('utf-8')).hexdigest()
-                
-                #Check for Redudant Entries
-                query = 'SELECT * FROM ' + self.table + ' WHERE hash_val=?'
-                self.cursor.execute(query, (hash_val,) )
-                if self.cursor.fetchone() != None:
-                    return                                  #DUPLICATE ENTRY
                 
                 #Add to database
                 experience = self.experience
