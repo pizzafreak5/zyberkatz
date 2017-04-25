@@ -191,11 +191,20 @@ class GUI(tk.Frame):
             elif term in self.custom_searches:
                 from_custom_search[term] = self.custom_searches[term]
 
-        
+        db = sqlite3.connect(db_name)
+        db_cursor = db.cursor()
+
         for search in from_search:
-            sql_code_to_drop = '''
-            DROP LOL
+            sql_drop = '''
+            DELETE FROM search
+            WHERE search_title = '{}'
             '''
+            self.searches.remove(search)
+            
+            query = sql_drop.format(search)
+            db_cursor.execute(query)
+            db.commit()
+            
             
         for search in from_custom_search:
             self.custom_searches.pop(search, None)
