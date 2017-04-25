@@ -94,6 +94,11 @@ class GUI(tk.Frame):
 
         menubar = tk.Menu(root)
 
+        # Zyber Katz
+        zmenu = tk.Menu(menubar, tearoff=0)
+        zmenu.add_command(label="About", command=self.about)
+        menubar.add_cascade(label="Zyber Katz", menu=zmenu)
+
         # Menu
         menu = tk.Menu(menubar, tearoff=0)
         #menu.add_command(label="Import", command=self.import_info)
@@ -103,11 +108,6 @@ class GUI(tk.Frame):
 
         #Edit
         #edit_menu = tk.Menu(menubar, tearoff=0)
-        
-        #Zyber Katz
-        zmenu = tk.Menu(menubar, tearoff=0)
-        zmenu.add_command(label="About", command=self.about)
-        menubar.add_cascade(label="Zyber Katz", menu=zmenu)
 		
         root.config(menu=menubar)
     
@@ -201,9 +201,9 @@ class GUI(tk.Frame):
         # Opens new window to display About message and Disclaimer
         toplevel = tk.Toplevel()
         toplevel.iconbitmap('sideprofileCat.ico')
-        label1 = tk.Label(toplevel, text=aboutTxt, height=0, width=60)
+        label1 = tk.Label(toplevel, text=aboutTxt, background = 'light grey', height=0, width=60)
         label1.pack()
-        label2 = tk.Label(toplevel, text=disclaimer, height=0, width=60)
+        label2 = tk.Label(toplevel, text=disclaimer, background = 'light grey', height=0, width=60)
         label2.pack()
 
     def play(self):
