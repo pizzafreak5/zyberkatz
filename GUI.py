@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, StringVar, Label, BOTTOM, SUNKEN, W, X,S,E
+from tkinter import ttk, StringVar, TOP, Label, BOTTOM, SUNKEN, N, W, X,S,E, Canvas, PhotoImage, YES, BOTH
 import tkinter.simpledialog
 import tkinter.messagebox
 import json
@@ -112,6 +112,11 @@ class GUI(tk.Frame):
     
     def create_search(self, root):
         global search_button_font
+
+
+        # image = PhotoImage(file='egyptcat.png')
+        # tk.Label(root, image =image).grid(row=0,column=1)
+
         #job title
         tk.Label(root, text="Job Title").grid(row=0, column=0)
         #Input
