@@ -194,24 +194,11 @@ class GUI(tk.Frame):
         print("export")
         
     def analytics(self):
-        searchJobTitle = self.selected
         query_job = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "job_type")
         query_exp = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "job_exp")
         query_salary = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "salary_est")
-        
-        #Remove this
-        db = sqlite3.connect(db_name)
-        db_cursor = db.cursor()
-        for row in db_cursor.execute(query_job):
-            print(row, end = ":::")
-        
-        for row in db_cursor.execute(query_exp):
-            print(row, end = ":::")
-            
-        for row in db_cursor.execute(query_salary):
-            print(row, end = ":::")
                 
-        tmp = analytics_gui.analyticsGUI(searchJobTitle)
+        tmp = analytics_gui.analyticsGUI(self.selected, query_job, query_exp, query_salary)
         
     def about(self):
         # About option from drop down window

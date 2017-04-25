@@ -10,7 +10,7 @@ import numpy.ma
 import matplotlib.pyplot as plt
 
 # Font size for the title
-LARGE_FONT = ("fixedsys", 18)
+LARGE_FONT = ("arial", 18)
 SMALL_FONT = ("arial", 7)
 BUTTON_FONT = ("arial", 14)
 
@@ -26,10 +26,12 @@ row_info = ['Company',
             'Web Links']
 
 class analyticsGUI(tk.Tk):
-    def __init__(self, searchJobTitle):
-        self.searchJobTitle= searchJobTitle
+    def __init__(self, jobTitle, queryJobType, queryJobExp, querySalaryEst):
+        self.search_list = ", ".join(jobTitle)
+        self.queryJobType = queryJobType
+        self.queryJobExp = queryJobExp
+        self.querySalaryEst = querySalaryEst
         self.analyticsPage()
-
 
 
 
@@ -38,7 +40,7 @@ class analyticsGUI(tk.Tk):
         self.analyticsWindow = tk.Toplevel(background = 'grey')
         self.analyticsWindow.wm_title("Analytics")
         self.analyticsWindow.iconbitmap('sideprofileCat.ico')
-        self.analyticsWindow.wm_geometry("300x200")
+        self.analyticsWindow.wm_geometry("300x250")
         #self.analyticsWindow.resizable(0, 0)
 
         # ****** Top  Toolbar ********
@@ -139,32 +141,9 @@ class analyticsGUI(tk.Tk):
         db = sqlite3.connect(global_db_name)  # Connect to the project database
         db_cursor = db.cursor()
 
-        # Prep to find the searches
-        search_list = "'"
-        # For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(self.searchJobTitle)
-        search_list += "'"
+        jobTypesNumbersList = [0, 0, 0, 0, 0, 0]
 
-        jobTypesNumbersList = [0,0,0,0,0,0]
-
-        # Query
-        query = '''
-                SELECT job_type
-                from listing
-                where hash_val
-                in
-                (
-                select hash_val
-                from junction
-                where search_hash
-                in
-                (
-                select search_hash
-                from search
-                where search_title = {}));
-                '''.format(search_list)
-
-        for row in db_cursor.execute(query):
+        for row in db_cursor.execute(self.queryJobType):
 
             for i in range(len(row)):
                 if (row[i] == 'fulltime'):
@@ -203,7 +182,7 @@ class analyticsGUI(tk.Tk):
                 shadow=True,
                 explode=(0,0,0,0,0,0),
                 autopct='%1.1f%%')
-        plt.title('{0} Job Types Graph'.format(search_list))
+        plt.title('{0} Job Types Graph'.format(self.search_list))
         plt.legend()
         plt.show()
 
@@ -214,32 +193,9 @@ class analyticsGUI(tk.Tk):
         db = sqlite3.connect(global_db_name)  # Connect to the project database
         db_cursor = db.cursor()
 
-        # Prep to find the searches
-        search_list = "'"
-        # For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(self.searchJobTitle)
-        search_list += "'"
-
         jobTypesNumbersList = [0, 0, 0, 0, 0, 0]
 
-        # Query
-        query = '''
-                SELECT job_type
-                from listing
-                where hash_val
-                in
-                (
-                select hash_val
-                from junction
-                where search_hash
-                in
-                (
-                select search_hash
-                from search
-                where search_title = {}));
-                '''.format(search_list)
-
-        for row in db_cursor.execute(query):
+        for row in db_cursor.execute(self.queryJobType):
 
             for i in range(len(row)):
                 if (row[i] == 'fulltime'):
@@ -278,7 +234,7 @@ class analyticsGUI(tk.Tk):
         plt.xticks(y_pos, objects)
         plt.xlabel('Job Types')
         plt.ylabel('Number of Types')
-        plt.title('{0} Job Types Graph'.format(search_list))
+        plt.title('{0} Job Types Graph'.format(self.search_list))
 
         plt.show()
 
@@ -290,32 +246,10 @@ class analyticsGUI(tk.Tk):
         db = sqlite3.connect(global_db_name)  # Connect to the project database
         db_cursor = db.cursor()
 
-        # Prep to find the searches
-        search_list = "'"
-        # For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(self.searchJobTitle)
-        search_list += "'"
 
         jobExpNumbersList = [0, 0, 0,]
 
-        # Query
-        query = '''
-               SELECT job_exp
-               from listing
-               where hash_val
-               in
-               (
-               select hash_val
-               from junction
-               where search_hash
-               in
-               (
-               select search_hash
-               from search
-               where search_title = {}));
-               '''.format(search_list)
-
-        for row in db_cursor.execute(query):
+        for row in db_cursor.execute(self.queryJobExp):
 
             for i in range(len(row)):
                 if (row[i] == 'entry_level'):
@@ -342,7 +276,7 @@ class analyticsGUI(tk.Tk):
                 shadow=True,
                 explode=(0,0,0),
                 autopct= '%1.1f%%')
-        plt.title('{0} Job Experience Graph'.format(search_list))
+        plt.title('{0} Job Experience Graph'.format(self.search_list))
         plt.legend()
         plt.show()
 
@@ -354,32 +288,10 @@ class analyticsGUI(tk.Tk):
         db = sqlite3.connect(global_db_name)  # Connect to the project database
         db_cursor = db.cursor()
 
-        # Prep to find the searches
-        search_list = "'"
-        # For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(self.searchJobTitle)
-        search_list += "'"
-
         jobExpNumbersList = [0, 0, 0]
 
-        # Query
-        query = '''
-              SELECT job_exp
-              from listing
-              where hash_val
-              in
-              (
-              select hash_val
-              from junction
-              where search_hash
-              in
-              (
-              select search_hash
-              from search
-              where search_title = {}));
-              '''.format(search_list)
 
-        for row in db_cursor.execute(query):
+        for row in db_cursor.execute(self.queryJobExp):
 
             for i in range(len(row)):
                 if (row[i] == 'entry_level'):
@@ -406,7 +318,7 @@ class analyticsGUI(tk.Tk):
         plt.xticks(y_pos, objects)
         plt.xlabel('Types of Experience')
         plt.ylabel('Level of Experience')
-        plt.title('{0} Job Experience Graph'.format(search_list))
+        plt.title('{0} Job Experience Graph'.format(self.search_list))
 
         plt.show()
 
@@ -420,32 +332,13 @@ class analyticsGUI(tk.Tk):
         db = sqlite3.connect(global_db_name)  # Connect to the project database
         db_cursor = db.cursor()
 
-        # Prep to find the searches
-        search_list = "'"
-        # For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(self.searchJobTitle)
-        search_list += "'"
+
 
         salaryEstNumbersList = [0, 0, 0, 0, 0]
 
-        # Query
-        query = '''
-              SELECT salary_est
-              from listing
-              where hash_val
-              in
-              (
-              select hash_val
-              from junction
-              where search_hash
-              in
-              (
-              select search_hash
-              from search
-              where search_title = {}));
-              '''.format(search_list)
 
-        for row in db_cursor.execute(query):
+
+        for row in db_cursor.execute(self.querySalaryEst):
 
             for i in range(len(row)):
                 if (row[i] == '$14,000'):
@@ -480,7 +373,7 @@ class analyticsGUI(tk.Tk):
                 shadow=True,
                 explode=(0, 0, 0, 0, 0),
                 autopct='%1.1f%%')
-        plt.title('{0} Salary Estimate Graph'.format(search_list))
+        plt.title('{0} Salary Estimate Graph'.format(self.search_list))
         plt.legend()
         plt.show()
 
@@ -493,32 +386,12 @@ class analyticsGUI(tk.Tk):
         db = sqlite3.connect(global_db_name)  # Connect to the project database
         db_cursor = db.cursor()
 
-        # Prep to find the searches
-        search_list = "'"
-        # For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(self.searchJobTitle)
-        search_list += "'"
 
         salaryEstNumbersList = [0, 0, 0, 0, 0]
 
-        # Query
-        query = '''
-              SELECT salary_est
-              from listing
-              where hash_val
-              in
-              (
-              select hash_val
-              from junction
-              where search_hash
-              in
-              (
-              select search_hash
-              from search
-              where search_title = {}));
-              '''.format(search_list)
 
-        for row in db_cursor.execute(query):
+
+        for row in db_cursor.execute(self.querySalaryEst):
 
             for i in range(len(row)):
                 if (row[i] == '$14,000'):
@@ -552,7 +425,7 @@ class analyticsGUI(tk.Tk):
         plt.xticks(y_pos, objects)
         plt.xlabel('Salary Levels')
         plt.ylabel('Number of Positions')
-        plt.title('{0} Salary Estimate Graph'.format(search_list))
+        plt.title('{0} Salary Estimate Graph'.format(self.search_list))
 
         plt.show()
 
