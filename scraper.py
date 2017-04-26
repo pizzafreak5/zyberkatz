@@ -66,9 +66,9 @@ class scraper:
             self.https = settings['https']
             
         if 'limit' not in settings:
-            self.limit = 1
+            self.limit = 5
         else:
-            self.limit = int(settings['limit'])
+            self.limit = settings['limit']
             
         if 'headers' not in settings:
             self.headers = None
