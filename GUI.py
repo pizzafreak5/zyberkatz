@@ -104,7 +104,7 @@ class GUI(tk.Frame):
         menu = tk.Menu(menubar, tearoff=0)
         #menu.add_command(label="Import", command=self.import_info)
         menu.add_command(label="Export Jobs", command=self.export_info)
-        menu.add_command(label="Exit", command=self.quit)
+        menu.add_command(label="Exit", command=root.destroy)
         menubar.add_cascade(label="Menu", menu=menu)
 
         #Edit
