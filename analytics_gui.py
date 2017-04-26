@@ -355,13 +355,13 @@ class analyticsGUI(tk.Tk):
                     temp = temp + 1
                     salaryEstNumbersList[2] = temp
                 elif (row[i] == '$70,000'):
-                    temp = salaryEstNumbersList[2]
+                    temp = salaryEstNumbersList[3]
                     temp = temp + 1
-                    salaryEstNumbersList[2] = temp
+                    salaryEstNumbersList[3] = temp
                 elif (row[i] == '$90,000'):
-                    temp = salaryEstNumbersList[2]
+                    temp = salaryEstNumbersList[4]
                     temp = temp + 1
-                    salaryEstNumbersList[2] = temp
+                    salaryEstNumbersList[4] = temp
                 #print(row[i])
 
         #print(salaryEstNumbersList)
@@ -408,13 +408,13 @@ class analyticsGUI(tk.Tk):
                     temp = temp + 1
                     salaryEstNumbersList[2] = temp
                 elif (row[i] == '$70,000'):
-                    temp = salaryEstNumbersList[2]
+                    temp = salaryEstNumbersList[3]
                     temp = temp + 1
-                    salaryEstNumbersList[2] = temp
+                    salaryEstNumbersList[3] = temp
                 elif (row[i] == '$90,000'):
-                    temp = salaryEstNumbersList[2]
+                    temp = salaryEstNumbersList[4]
                     temp = temp + 1
-                    salaryEstNumbersList[2] = temp
+                    salaryEstNumbersList[4] = temp
                 #print(row[i])
 
         #print(salaryEstNumbersList)

@@ -261,7 +261,15 @@ class GUI(tk.Frame):
         query_chart = self.create_search_query(self.searches, self.custom_searches, self.selected,[], "", "company, job_title, job_loc, salary_est, link")
                 
         tmp = analytics_gui.analyticsGUI(self.selected, query_job, query_exp, query_salary, query_chart)
-        
+
+    def reset(self):
+
+        # Reset and clears all fields
+        self.defaultHost.set("")
+        self.defaultStart.set(0)
+        self.defaultEnd.set(0)
+
+        self.updateStatus("Input fields reset...")
     def about(self):
         # About option from drop down window
         # Opens new window to display About message and Disclaimer
