@@ -17,13 +17,13 @@ global_db_name = 'zyber.db'
 
 
 class ResultsChart(tk.Tk):
-    def __init__(self, searchJobTitle):
+    def __init__(self, queryChart):
         tk.Tk.__init__(self)
-        self.searchJobTitle = searchJobTitle
-        self.grabJobTitle(self.searchJobTitle)
+        self.queryChart = queryChart
+        self.grabJobTitle()
 
 
-    def grabJobTitle(self, searchJobTitle):
+    def grabJobTitle(self):
 
         row_info = ['Company',
                     'Job title',
@@ -36,30 +36,30 @@ class ResultsChart(tk.Tk):
         db = sqlite3.connect(global_db_name)  # Connect to the project database
         db_cursor = db.cursor()
 
-        # Prep to find the searches
-        search_list = "'"
-        # For singular it is done inside the query string itself
-        search_list += "' or search_title = '".join(searchJobTitle)
-        search_list += "'"
-
-        # Query
-        query = '''
-                SELECT company, job_title, job_loc, salary_est, link
-                from listing
-                where hash_val
-                in
-                (
-                select hash_val
-                from junction
-                where search_hash
-                in
-                (
-                select search_hash
-                from search
-                where search_title = {}));
-                '''.format(search_list)
+        # # Prep to find the searches
+        # search_list = "'"
+        # # For singular it is done inside the query string itself
+        # search_list += "' or search_title = '".join(searchJobTitle)
+        # search_list += "'"
+        #
+        # # Query
+        # query = '''
+        #         SELECT company, job_title, job_loc, salary_est, link
+        #         from listing
+        #         where hash_val
+        #         in
+        #         (
+        #         select hash_val
+        #         from junction
+        #         where search_hash
+        #         in
+        #         (
+        #         select search_hash
+        #         from search
+        #         where search_title = {}));
+        #         '''.format(search_list)
         rowNumber = 1
-        for row in db_cursor.execute(query):
+        for row in db_cursor.execute(self.queryChart):
             for i in range(len(row)):
                 row_info.append(row[i])
 

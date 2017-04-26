@@ -229,8 +229,9 @@ class GUI(tk.Frame):
         query_job = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "job_type")
         query_exp = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "job_exp")
         query_salary = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "salary_est")
+        query_chart = self.create_search_query(self.searches, self.custom_searches, self.selected,[], "", "company, job_title, job_loc, salary_est, link")
                 
-        tmp = analytics_gui.analyticsGUI(self.selected, query_job, query_exp, query_salary)
+        tmp = analytics_gui.analyticsGUI(self.selected, query_job, query_exp, query_salary, query_chart)
         
     def about(self):
         # About option from drop down window

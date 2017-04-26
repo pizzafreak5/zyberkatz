@@ -26,11 +26,12 @@ row_info = ['Company',
             'Web Links']
 
 class analyticsGUI(tk.Tk):
-    def __init__(self, jobTitle, queryJobType, queryJobExp, querySalaryEst):
+    def __init__(self, jobTitle, queryJobType, queryJobExp, querySalaryEst, queryChart):
         self.search_list = ", ".join(jobTitle)
         self.queryJobType = queryJobType
         self.queryJobExp = queryJobExp
         self.querySalaryEst = querySalaryEst
+        self.queryChart = queryChart
         self.analyticsPage()
 
 
@@ -92,8 +93,8 @@ class analyticsGUI(tk.Tk):
 
 
     def goResultsChart(self):
-        searchJobTitle = self.searchJobTitle
-        tmp = analytics_chart.ResultsChart(searchJobTitle)
+        tmp = analytics_chart.ResultsChart(self.queryChart)
+
     def doNothing(self):
         print("")
 
