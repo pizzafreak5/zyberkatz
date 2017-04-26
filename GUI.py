@@ -240,7 +240,7 @@ class GUI(tk.Frame):
             print ("QUERY:",query)           
             
             row_count = 0
-            with open(filename, 'w', newline='', encoding='utf8') as csvfile:
+            with open(filename + ".csv", 'w', newline='', encoding='utf8') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',',
                                     quotechar='"', quoting=csv.QUOTE_ALL)
                 for row in db_cursor.execute(query):
