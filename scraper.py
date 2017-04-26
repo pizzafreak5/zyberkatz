@@ -66,9 +66,9 @@ class scraper:
             self.https = settings['https']
             
         if 'limit' not in settings:
-            self.limit = 1
+            self.limit = 5
         else:
-            self.limit = int(settings['limit'])
+            self.limit = settings['limit']
             
         if 'headers' not in settings:
             self.headers = None
@@ -113,7 +113,7 @@ class scraper:
     def convert_time_posted(self, time):
         digit = time.split(' ')       
         today = datetime.now()
-        if "+" not in digit[0]:
+        if "+" in digit[0]:
             today = "old"
             return today
         #subtract it as days

@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, StringVar, TOP, Label, BOTTOM, SUNKEN, N, W, X,S,E, Canvas, PhotoImage, YES, BOTH
+from tkinter import ttk, filedialog, StringVar, TOP, Label, BOTTOM, SUNKEN, N, W, X,S,E, Canvas, PhotoImage, YES, BOTH
 import tkinter.simpledialog
 import tkinter.messagebox
 import json
@@ -7,6 +7,7 @@ import search_logic
 import sqlite3
 import analytics_gui
 import threading
+import csv
 
 
 aboutTxt = """
@@ -102,8 +103,8 @@ class GUI(tk.Frame):
         # Menu
         menu = tk.Menu(menubar, tearoff=0)
         #menu.add_command(label="Import", command=self.import_info)
-        menu.add_command(label="Export", command=self.export_info)
-        menu.add_command(label="Exit", command=self.quit)
+        menu.add_command(label="Export Jobs", command=self.export_info)
+        menu.add_command(label="Exit", command=root.destroy)
         menubar.add_cascade(label="Menu", menu=menu)
 
         #Edit
@@ -223,7 +224,35 @@ class GUI(tk.Frame):
         print("imports")
         
     def export_info(self):
-        print("export")
+        filename = filedialog.asksaveasfilename(initialdir = '/', title='Save Export as',
+                                            filetypes= (("Comma Separated Values (*.csv)", "*.csv"),))
+        if filename is None:
+            return
+        else:
+            db = sqlite3.connect(db_name)
+            db_cursor = db.cursor()
+            
+            query = "SELECT * FROM listing"
+            if self.selected:
+                query = self.create_search_query(self.searches, self.custom_searches,
+                                                 self.selected, [], "")
+                
+            print ("QUERY:",query)           
+            
+            row_count = 0
+            with open(filename + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',',
+                                    quotechar='"', quoting=csv.QUOTE_ALL)
+                for row in db_cursor.execute(query):
+                    row_count +=1
+                    list_row = []
+                    for value in row:
+                        list_row.append(value)
+                    writer.writerow(list_row)
+            
+            
+            finish = "Finished writing to file " + filename + ".csv\n" + "Exported " + str(row_count) + " jobs"
+            tkinter.messagebox.showinfo("Finished Exporting", finish)
         
     def analytics(self):
         query_job = self.create_search_query(self.searches, self.custom_searches, self.selected, [], "", "job_type")
