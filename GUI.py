@@ -104,6 +104,8 @@ class GUI(tk.Frame):
         menu = tk.Menu(menubar, tearoff=0)
         #menu.add_command(label="Import", command=self.import_info)
         menu.add_command(label="Export Jobs", command=self.export_info)
+        menu.add_command(label="Reset Search Fields", command=self.reset)
+        menu.add_separator()
         menu.add_command(label="Exit", command=root.destroy)
         menubar.add_cascade(label="Menu", menu=menu)
 
@@ -115,22 +117,29 @@ class GUI(tk.Frame):
     def create_search(self, root):
         global search_button_font
 
+        # ****** Default Input Values *******
+        self.default_job_title = StringVar(value="ex: Cyber Security")
+        self.default_location = StringVar(value="ex: Washington, DC")
+        self.default_search_name = StringVar(value="ex: CyberSec DC")
+
+
         #job title
         tk.Label(root, background='light grey',text="Job Title:").grid(row=0, column=0, sticky = W+E, padx=15, pady=10)
         #Input
-        self.job_title = tk.Entry(root, highlightbackground='light grey')
+        self.job_title = tk.Entry(root, highlightbackground='light grey', textvariable=self.default_job_title)
         self.job_title.grid(row=0, column=1,padx=10, pady=5)
         
         #Location
         tk.Label(root, background='light grey',text="Location:").grid(row=1, column=0, sticky = W+E, padx=15, pady=10,)
+
         #Input
-        self.location = tk.Entry(root, highlightbackground='light grey')
+        self.location = tk.Entry(root, highlightbackground='light grey', textvariable=self.default_location)
         self.location.grid(row=1, column =1, padx=10, pady=5)
         
         #Search title
         tk.Label(root, background='light grey', text="Search Name:").grid(row=2, column=0,sticky = W+E, padx=15, pady=10)
         #Input
-        self.search_name = tk.Entry(root, highlightbackground='light grey')
+        self.search_name = tk.Entry(root, highlightbackground='light grey', textvariable=self.default_search_name)
         self.search_name.grid(row=2, column =1, padx=10, pady=5,)
         
         #search button
@@ -265,11 +274,12 @@ class GUI(tk.Frame):
     def reset(self):
 
         # Reset and clears all fields
-        self.defaultHost.set("")
-        self.defaultStart.set(0)
-        self.defaultEnd.set(0)
+        self.default_job_title.set("")
+        self.default_location.set("")
+        self.default_search_name.set("")
 
         self.updateStatus("Input fields reset...")
+
     def about(self):
         # About option from drop down window
         # Opens new window to display About message and Disclaimer
