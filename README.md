@@ -13,5 +13,11 @@ This GUI application searches Indeed.com for a job search specified by the user.
 
 **Usage:**
 
-Execute GUI.py to begin the application. 
-
+- Execute GUI.py to begin the application. 
+- Fill out the fields for the job type and location you want to get data on. Give in a name for the search and press the 'Search Indeed.com' button. The search itself will take a few minutes...
+- Any notifications will be displayed on the lower grey bar on the GUI.
+- Once the search says it's complete, you can go to the results tab to view analytics.
+- You can select one or multiple searches to then select one of the buttons below. 
+- With the 'Create a new Search...' button, you can text search through the selected searches. 
+- The 'Analytics' search opens up a new Analytics GUI. You can select to view bar or pie graphs based on multiple categories. 
+- The 'Delete Selected Entries' simply deletes the searches you have selected. 
