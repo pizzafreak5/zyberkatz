@@ -8,18 +8,25 @@ This GUI application searches Indeed.com for a job search specified by the user.
  - Git clone the repo into a local folder on your machine. 
  - Open the project in Pycharm or your preferred method of running a python program
  - Verify you have Python version 3.6.0 on your machine.
- - Verify the following packages are in your interpreter for the program: beautifulsoup4, bs4, matplotlib, numpy, pandas, sqlite3, datetime, hashlib, json, tkinter, scraper, lxml.
+ - Verify the following packages are in your interpreter for the program: beautifulsoup4, bs4, matplotlib, numpy, pandas, sqlite3, datetime, hashlib, json, tkinter, scraper, lxml, webbrowser, csv, threading, requests, re, url.libparse, timedelta, 
 
+**GUI Layout**
+
+ - main GUI contains: 2 tabs search and results, 2 menu options Zyber Katz and Menu.
+ - Search tab contains: 2 fields (job titles and location) with 1 correlating field (search name) and 1 initiation search button. Status bar at bottom of view.
+ - Results tab contains: list box containing previous searches, 3 buttons (Create a new Search From the above, analytics, and Delete Selected Entries).
+ - 'Create new search from the above' GUI contains: custom text search on the selected categories (noted at top of GUI), also a save button to store text searches within the listbox of the Results view.
+ - 'Analytics' GUI contains: results chart (displays a table of entries from the search(es) selected). The salary estimates, job experience, and job type can all be displayed in either pie charts or bar graphs.
+ - 'Delecte selected entries' button: deletes whatever entries you have selected.
+ - Zyber Katz menu option: has an about section that displays a disclaimer and an about section on the program. 
+ - Menu menu option: Export jobs, reset search fields, and exit. Export jobs, 
 
 **Usage:**
 
 - Execute GUI.py to begin the application. 
-- Fill out the fields for the job type and location you want to get data on. Give in a name for the search and press the 'Search Indeed.com' button. The search itself will take a few minutes...
-- Any notifications will be displayed on the lower grey bar on the GUI.
-- Once the search says it's complete, you can go to the results tab to view analytics.
-- You can select one or multiple searches to then select one of the buttons below. 
-- With the 'Create a new Search...' button, you can text search through the selected searches. 
-- The 'Analytics' search opens up a new Analytics GUI. You can select to view bar or pie graphs based on multiple categories. 
-- The 'Delete Selected Entries' simply deletes the searches you have selected. 
-
-- In the menu, the 'export' option exports whichever searches are selected to a csv file. If no searches are selected, it exports all the jobs in the database. 
+- Fill out the search fields for the job type, location, and title for this partical search. Press the 'Search Indeed.com' button to comence the query. The search itself will take a few minutes...
+- The bottom status bar will notify once query has completed.
+- Once the search says it's complete, you can go to the results tab to view analytics and perform custom text searches.
+- You can select one or multiple searches to then select one of the buttons below.
+- Click on the Analytics button to view a results table, pie charts, and bar graph for selected previous searches.
+- There are saving options for pie charts, bar graphs and query databases.
