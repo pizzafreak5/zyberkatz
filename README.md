@@ -8,7 +8,7 @@ This GUI application searches Indeed.com for a job search specified by the user.
  - Git clone the repo into a local folder on your machine. 
  - Open the project in Pycharm or your preferred method of running a python program
  - Verify you have Python version 3.6.0 on your machine.
- - Verify the following packages are in your interpreter for the program: beautifulsoup4, bs4, matplotlib, numpy, pandas, sqlite3, datetime, hashlib, json, tkinter, scraper.
+ - Verify the following packages are in your interpreter for the program: beautifulsoup4, bs4, matplotlib, numpy, pandas, sqlite3, datetime, hashlib, json, tkinter, scraper, lxml.
 
 
 **Usage:**
@@ -21,3 +21,5 @@ This GUI application searches Indeed.com for a job search specified by the user.
 - With the 'Create a new Search...' button, you can text search through the selected searches. 
 - The 'Analytics' search opens up a new Analytics GUI. You can select to view bar or pie graphs based on multiple categories. 
 - The 'Delete Selected Entries' simply deletes the searches you have selected. 
+
+- In the menu, the 'export' option exports whichever searches are selected to a csv file. If no searches are selected, it exports all the jobs in the database. 
