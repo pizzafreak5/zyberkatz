@@ -52,7 +52,7 @@ class GUI(tk.Frame):
         super().__init__(root)
         root.resizable(0,0)
         root.iconbitmap('sideprofileCat.ico')
-        root.wm_title("KATTZraper")
+        root.wm_title("KATTZscraper")
 
         self.isRunning = False  # Multi-threading flag
 
