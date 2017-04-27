@@ -1,4 +1,4 @@
-# zyberkatz
+# zyberkatz KATTZ webscraper
 **Program description:**
 
 This GUI application searches Indeed.com for a job search specified by the user. The results are stored in a SQLite database. You can view the results from the search as well as search for analytics based on the job title.
@@ -6,10 +6,54 @@ This GUI application searches Indeed.com for a job search specified by the user.
 **Setup directions:**
 
  - Git clone the repo into a local folder on your machine. 
- - Open the project in Pycharm or your preferred method of running a python program
- - Verify you have Python version 3.6.0 on your machine.
- - Verify the following packages are in your interpreter for the program: beautifulsoup4, bs4, matplotlib, numpy, pandas, sqlite3, datetime, hashlib, json, tkinter, scraper, lxml, webbrowser, csv, threading, requests, re, url.libparse, timedelta, 
+ - Verify you have Python version 3.6.0 on your machine. On command line run, `python -V`
+ 
+ 
+ - Verify the following packages are in your interpreter for the program: 
+ 
+ 1. beautifulsoup4
+ 2. bs4
+ 3. matplotlib
+ 4. numpy
+ 5. pandas
+ 6. datetime
+ 7. scraper
+ 8. lxml
+ 9. requests
 
+ 
+ 
+ - If packages are not installed...
+ 
+ from command line download pip by executing
+ 
+ 
+ `curl https://bootstrap.pypa.io/ez_setup.py | python`
+ 
+ if that doesn't work follow [this link](https://packaging.python.org/installing/#use-pip-for-installing)
+ 
+ then
+ 
+ 
+ `curl https://bootstrap.pypa.io/get-pip.py | python`
+ 
+ then execute
+ 
+ `pip install <package name>`
+ 
+ If something still doesn't work in the program, make sure you have the following Python packages installed on your machine
+ 
+ 1. sqlite3
+ 2. hashlib  
+ 3. json 
+ 4. tkinter
+ 5. re
+ 6. url.libparse 
+ 7. timedelta
+ 8. webbrowser 
+ 9. csv
+ 10. threading
+ 
 **GUI Layout**
 
  - main GUI contains: 2 tabs search and results, 2 menu options Zyber Katz and Menu.
