@@ -12,14 +12,12 @@ This GUI application searches Indeed.com for a job search specified by the user.
  - Verify the following packages are in your interpreter for the program: 
  
  1. beautifulsoup4
- 2. bs4
- 3. matplotlib
- 4. numpy
- 5. pandas
- 6. datetime
- 7. scraper
- 8. lxml
- 9. requests
+ 2. matplotlib
+ 3. numpy
+ 4. pandas
+ 5. datetime
+ 6. lxml
+ 7. requests
 
  
  
