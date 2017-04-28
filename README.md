@@ -7,7 +7,7 @@ This GUI application searches Indeed.com for a job search specified by the user.
 
  - Git clone the repo into a local folder on your machine. 
  - Verify you have Python version 3.6.0 on your machine. On command line run, `python -V`
- 
+ - Open up a terminal in the directory of the cloned github repo and execute "python setup.py install", this will install all the packages listed in install_requires in the file setup.py which should then install all the required packages to use this project.
  
  - Verify the following packages are in your interpreter for the program: 
  
