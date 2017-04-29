@@ -16,7 +16,7 @@ Licensed 2017, March 25th.
 
 Release version # 1.0.4
 
-This web scrapper was designed to scrape and search Indeed.com
+This web scraper was designed to scrape and search Indeed.com
 for a specified job and/or location, then storing the information
 in a SQL database. It will be possible to look up analytics for the job
 searches as well as comparative analytics on many of the job searches. 
@@ -27,7 +27,7 @@ Powered by open-source software
 disclaimer = """
 Disclaimer
 
-This tool was manufactured for an university class project. Much testing
+This tool was manufactured for a university class project. Much testing
 has been performed, however unforeseen scenarios may impose undesirable
 output and/or operation. There is no warranty to the output and/or operation
 provided by this tool. This tool should be considered as a learning tool
